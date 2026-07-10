@@ -1,0 +1,11 @@
+.badge-grid {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    width: 90vw;
+    margin: 0 5vw;
+
+    .badge-holder {
+        width: 95%;
+        padding: 2.5%;
+    }
+}
