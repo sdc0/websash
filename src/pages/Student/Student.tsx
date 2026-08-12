@@ -10,7 +10,7 @@ function Student() {
     const [badges, setBadges] = useState<Badge[]>([]);
 
     useEffect(() => {
-        const id: string | null = localStorage.getItem("studentID");
+        const id: string | null = localStorage.getItem("ID");
         if (id == null) {
             setBadges([]);
             return;
@@ -22,7 +22,7 @@ function Student() {
     }, []);
 
     return (
-        <div>
+        <div className="badge-grid">
             {
                 badges.map((b) => (
                     <Badge_Node badge={b} />

@@ -1,0 +1,21 @@
+.badge-page {
+    margin: 0 10vw;
+    width: 80vw;
+}
+
+.badge-page-header {
+    width: 100%;
+}
+
+.badge-page-image {
+    display: flex;
+    justify-content: center;
+
+    img {
+        max-width: 500px;
+    }
+}
+
+.badge-page-details {
+    width: 100%;
+}

@@ -12,9 +12,10 @@ function Login() {
         getToken(email, password).then((res) => {
             if (res == null) return;
 
-            localStorage.setItem("issuerToken", JSON.stringify(res["token"]));
-            localStorage.setItem("issuerID", JSON.stringify(res["id"]));
-            nav("/");
+            localStorage.setItem("token", JSON.stringify(res["token"]));
+            localStorage.setItem("ID", JSON.stringify(res["id"]));
+            localStorage.setItem("token_type", "issuer");
+            nav("/issuer");
         });
     }
 
@@ -26,8 +27,9 @@ function Login() {
             if (res == null) return;
 
             console.log(res);
-            localStorage.setItem("studentToken", JSON.stringify(res["token"]));
-            localStorage.setItem("studentID", JSON.stringify(res["id"]));
+            localStorage.setItem("token", JSON.stringify(res["token"]));
+            localStorage.setItem("ID", JSON.stringify(res["id"]));
+            localStorage.setItem("token_type", "student");
             nav("/student");
         });
     }

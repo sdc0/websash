@@ -15,11 +15,12 @@
         background-color: aqua;
         border: 1px solid black;
         text-decoration: none;
+        align-items: center;
         color: inherit;
 
         p {
-            margin: center;
-            padding: 0 5px;
+            margin: 0;
+            padding: 0;
         }
 
         img {
