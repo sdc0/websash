@@ -56,6 +56,14 @@ export class Issuer {
         "password": "text"
     };
 
+    constructor(id: number, name: string, department: string, email: string, password: string) {
+        this.id = id;
+        this.name = name;
+        this.department = department;
+        this.email = email;
+        this.password = password;
+    }
+
     static from_json(issuer_obj: Record<string, string>): Issuer {
         let t = new Issuer();
         
@@ -82,6 +90,13 @@ export class Student {
         "email": "email",
         "password": "text"
     };
+
+    constructor(id: number, name: string, email: string, password: string) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
 
     static from_json(student_obj: Record<string, string>): Student {
         let t = new Student();

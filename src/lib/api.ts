@@ -21,6 +21,20 @@ export async function getToken(email: string, password: string, issuer: boolean=
     return null;
 }
 
+export async function getSalt(email: string, isIssuer: boolean): Promise<string> {
+    return fetch(`${api}/${isIssuer ? "issuer" : "student"}/salt`, {
+        method: "POST",
+        headers: {
+            "content-type": "application/json"
+        },
+        body: JSON.stringify({
+            "email": email
+        })
+    }).then((res) => res.json()).then((res) => {
+        return res["salt"];
+    });
+}
+
 export async function getBadges(): Promise<Badge[] | null> {
     let temp: Record<string, string>[] = await (await fetch(`${api}/badge`)).json();
     let badges: Badge[] = [];
@@ -101,7 +115,8 @@ export async function createStudent(student: Student): Promise<boolean> {
             "token_type": localStorage.getItem("token_type") as string,
             "name": student.name,
             "email": student.name,
-            "password": student.password
+            "password": student.password,
+            "salt": student.salt
         })
     }).then((t) => t.ok);
 }
@@ -112,13 +127,14 @@ export async function createIssuer(issuer: Issuer): Promise<boolean> {
         headers: {
             "content-type": "application/json"
         },
-        body: JSON.sringify({
+        body: JSON.stringify({
             "token": JSON.parse(localStorage.getItem("token") as string),
             "token_type": localStorage.getItem("token_type") as string,
             "name": issuer.name,
             "department": issuer.department,
             "email": issuer.email,
-            "password": issuer.password
+            "password": issuer.password,
+            "salt": issuer.salt
         })
     }).then((t) => t.ok);
 }

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Badge, Issuance, Issuer, Student } from "../../lib/models";
-import { createBadge } from "../../lib/api"
+import { createBadge, createStudent, createIssuer } from "../../lib/api"
 import Create_Form from "../../components/Create_Form/Create_Form";
 
 function IssuerPage() {
@@ -15,11 +15,13 @@ function IssuerPage() {
                     e.preventDefault();
                     if (e.target.value === "badge") {
                         setSelectedAdd(new Badge(0, "", "", "", "", "", ""));
-                        setCreator((obj) => createBadge(obj));
+                        setCreator((obj) => (obj) => createBadge(obj));
                     } else if (e.target.value === "student") {
-                        setSelectedAdd(new Student());
+                        setSelectedAdd(new Student(0, "", "", ""));
+                        setCreator((obj) => (obj) => createStudent(obj));
                     } else {
-                        setSelectedAdd(new Issuer());
+                        setSelectedAdd(new Issuer(0, "", "", "", ""));
+                        setCreator((obj) => (obj) => createIssuer(obj));
                     }
                     
                     console.log(e.target.value);

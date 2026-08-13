@@ -1,4 +1,5 @@
 import { Badge, Student, Issuer, Issuance } from '../../lib/models';
+import { generateSalt, generateHash } from "../../lib/helper";
 import { fileToBase64 } from "../../lib/helper";
 import "./Create_Form.css";
 
@@ -12,8 +13,18 @@ function Create_Form({obj, setter, creator}: CreateFormProps) {
 
     return (
         <div>
-            <form onSubmit={(e) => {
+            <form onSubmit={async (e) => {
                 e.preventDefault();
+                console.log(obj.constructor.name);
+                if (obj.constructor.name === "Issuer" || obj.constructor.name === "Student") {
+                    obj.salt = generateSalt();
+                    await generateHash(obj.password, obj.salt).then((password) => {
+                        obj.password = password;
+                    });
+                }
+
+                console.log(obj);
+                console.log(creator);
                 console.log(creator(obj));
             }}>
                 {

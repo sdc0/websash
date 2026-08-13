@@ -14,7 +14,6 @@ function Home() {
         getBadges().then((b) => {
             if (b !== null) setBadges(b);
         });
-        generateHash();
     }, []);
 
     return (

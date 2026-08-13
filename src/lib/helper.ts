@@ -1,4 +1,4 @@
-const argon2 = require('argon2-browser');
+import bcrypt from "bcryptjs";
 
 export function fileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -19,6 +19,7 @@ export function arrayToString(arr: Uint8Array): string {
     for (let i: number = 0; i < arr.length; i++) {
         temp += String.fromCharCode(arr[i]);
     }
+    return temp;
 }
 
 export function stringToArray(str: string): Uint8Array {
@@ -26,18 +27,16 @@ export function stringToArray(str: string): Uint8Array {
     for (let i: number = 0; i < temp.length; i++) {
         temp[i] = str.charCodeAt(i);
     }
+    return temp;
 }
 
-export function generateSalt(len: number): string {
-    const array = new Uint8Array(len);
+export function generateSalt(): string {
+    return bcrypt.genSaltSync(10);
+    /*const array = new Uint8Array(len);
     crypto.getRandomValues(array);
-    return arrayToString(array);
+    return arrayToString(array);*/
 }
 
 export async function generateHash(password: string, salt: string) {
-    const hash = await hash(password);
-    console.log(hash);
-    const hash2 = await hash(password);
-    console.log(hash2);
-    return hash;
+    return bcrypt.hashSync(password, salt);
 }
