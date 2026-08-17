@@ -1,8 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+
 import { getToken, getSalt, createStudent, createIssuer } from "../../lib/api";
 import { generateSalt, generateHash } from "../../lib/helper";
 import { Student, Issuer } from "../../lib/models";
-import { useNavigate } from "react-router-dom";
 
 function Login() {
     const nav = useNavigate();
@@ -31,11 +32,7 @@ function Login() {
         const salt = generateSalt();
         
         generateHash((e.target.querySelector('input[name="password"]') as HTMLInputElement).value, salt).then((password) => {
-            let temp = new Issuer(0, name, department, email, password);
-            temp.salt = salt;
-
-            console.log(temp);
-            console.log(salt);
+            let temp = new Issuer(0, name, department, email, password, salt);
 
             createIssuer(temp).then((ok) => {
                 if (ok) {
@@ -57,7 +54,7 @@ function Login() {
 
         getSalt(email, false).then((salt) => {
             generateHash((e.target.querySelector('input[name="password"]') as HTMLInputElement).value, salt).then((password) => {
-                getToken(email, password).then((res) => {
+                getToken(email, password, false).then((res) => {
                     if (res == null) return;
 
                     localStorage.setItem("token", JSON.stringify(res["token"]));
@@ -75,12 +72,11 @@ function Login() {
         const salt = generateSalt();
         
         generateHash((e.target.querySelector('input[name="password"]') as HTMLInputElement).value, salt).then((password) => {
-            let temp = new Student(0, name, email, password);
-            temp.salt = salt;
+            let temp = new Student(0, name, email, password, salt);
 
             createStudent(temp).then((ok) => {
                 if (ok) {
-                    getToken(email, password).then((res) => {
+                    getToken(email, password, false).then((res) => {
                         if (res == null) return;
 
                         localStorage.setItem("token", JSON.stringify(res['token']));

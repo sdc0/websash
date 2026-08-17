@@ -1,6 +1,5 @@
 import { Badge, Student, Issuer, Issuance } from '../../lib/models';
-import { generateSalt, generateHash } from "../../lib/helper";
-import { fileToBase64 } from "../../lib/helper";
+import { generateSalt, generateHash, fileToBase64 } from "../../lib/helper";
 import "./Create_Form.css";
 
 interface CreateFormProps {
@@ -15,7 +14,6 @@ function Create_Form({obj, setter, creator}: CreateFormProps) {
         <div>
             <form onSubmit={async (e) => {
                 e.preventDefault();
-                console.log(obj.constructor.name);
                 if (obj.constructor.name === "Issuer" || obj.constructor.name === "Student") {
                     obj.salt = generateSalt();
                     await generateHash(obj.password, obj.salt).then((password) => {
@@ -23,9 +21,7 @@ function Create_Form({obj, setter, creator}: CreateFormProps) {
                     });
                 }
 
-                console.log(obj);
-                console.log(creator);
-                console.log(creator(obj));
+                creator(obj);
             }}>
                 {
                     Object.entries(types).map(([field, type]) => {
@@ -33,15 +29,14 @@ function Create_Form({obj, setter, creator}: CreateFormProps) {
                             <div>
                                 <label>
                                     {field}:
-                                    <input id={`${field}-input`} type={type} onChange={(e) => {
+                                    <input id={`${field}-input`} name={field} type={type} onChange={async (e) => {
                                         e.preventDefault();
-                                        
-                                        let temp = obj;
+                                        let temp = obj.clone();
 
                                         if (type === "file") {
                                             const file = e.target.files?.[0];
                                             if (file) {
-                                                fileToBase64(file).then((base64) => {
+                                                await fileToBase64(file).then((base64) => {
                                                     eval(`temp.${field} = "${base64}"`);
                                                 });
                                             }

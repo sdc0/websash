@@ -16,14 +16,28 @@ export class Badge {
         "req": "text"
     };
 
-    constructor(id: number, name: string, abbr: string, type: string, image: string, desc: string, req: string) {
-        this.id = id;
-        this.name = name;
-        this.abbr = abbr;
-        this.type = type;
-        this.image = image;
-        this.desc = desc;
-        this.req = req;
+    constructor();
+    constructor(id: number, name: string, abbr: string, type: string, image: string, desc: string, req: string);
+    constructor(id?: number, name?: string, abbr?: string, type?: string, image?: string, desc?: string, req?: string) {
+        this.id = id ?? 0;
+        this.name = name ?? "";
+        this.abbr = abbr ?? "";
+        this.type = type ?? "";
+        this.image = image ?? "";
+        this.desc = desc ?? "";
+        this.req = req ?? "";
+    }
+
+    clone(): Badge {
+        return new Badge(
+            this.id,
+            this.name,
+            this.abbr,
+            this.type,
+            this.image,
+            this.desc,
+            this.req
+        );
     }
 
     static from_json(badge_obj: Record<string, string>): Badge {
@@ -56,12 +70,27 @@ export class Issuer {
         "password": "text"
     };
 
-    constructor(id: number, name: string, department: string, email: string, password: string) {
-        this.id = id;
-        this.name = name;
-        this.department = department;
-        this.email = email;
-        this.password = password;
+    constructor();
+    constructor(id: number, name: string, department: string, email: string, password: string);
+    constructor(id: number, name: string, department: string, email: string, password: string, salt: string);
+    constructor(id?: number, name?: string, department?: string, email?: string, password?: string, salt?: string) {
+        this.id = id ?? 0;
+        this.name = name ?? "";
+        this.department = department ?? "";
+        this.email = email ?? "";
+        this.password = password ?? "";
+        this.salt = salt ?? "";
+    }
+
+    clone(): Issuer {
+        return new Issuer(
+            this.id,
+            this.name,
+            this.department,
+            this.email,
+            this.password,
+            this.salt
+        );
     }
 
     static from_json(issuer_obj: Record<string, string>): Issuer {
@@ -91,11 +120,25 @@ export class Student {
         "password": "text"
     };
 
-    constructor(id: number, name: string, email: string, password: string) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.password = password;
+    constructor();
+    constructor(id: number, name: string, email: string, password: string);
+    constructor(id: number, name: string, email: string, password: string, salt: string);
+    constructor(id?: number, name?: string, email?: string, password?: string, salt?: string) {
+        this.id = id ?? 0;
+        this.name = name ?? "";
+        this.email = email ?? "";
+        this.password = password ?? "";
+        this.salt = salt ?? "";
+    }
+
+    clone(): Student {
+        return new Student(
+            this.id,
+            this.name,
+            this.email,
+            this.password,
+            this.salt
+        );
     }
 
     static from_json(student_obj: Record<string, string>): Student {
@@ -123,6 +166,24 @@ export class Issuance {
         "student": "number",
         "date": "date"
     };
+
+    constructor();
+    constructor(badge: number, issuer: number, student: number, date: Date);
+    constructor(badge?: number, issuer?: number, student?: number, date?: Date) {
+        this.badge = badge ?? -1;
+        this.issuer = issuer ?? -1;
+        this.student = student ?? -1;
+        this.date = date ?? new Date();
+    }
+
+    clone(): Issuance {
+        return new Issuance(
+            this.badge,
+            this.issuer,
+            this.student,
+            this.date
+        );
+    }
 
     static from_json(issuance_obj: Record<string, string>): Issuance {
         let t = new Issuance();

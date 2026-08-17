@@ -38,5 +38,5 @@ export function generateSalt(): string {
 }
 
 export async function generateHash(password: string, salt: string) {
-    return bcrypt.hashSync(password, salt);
+    return bcrypt.hash(password, salt);
 }
