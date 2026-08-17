@@ -1,26 +1,35 @@
 .admin-page {
-    width: 100%;
-    margin: 5px;
-    display: grid;
+    display: flex;
+    flex-direction: column;
 }
 
 .admin-container {
+    border-bottom: 1px solid black;
+    padding: 5px;
+}
+
+.form-container {
     display: flex;
-    width: 100%;
-    border: 1px solid black;
+    flex-direction: row;
 }
 
 .sub-container {
-    max-width: calc(50% - 5px);
-    margin: 5px;
-}
-
-.badge-container {
-    width: 100%;
-    margin: 5px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 33%;
 
     .badge-tile {
-        height: 100%;
-        width: 100%;
+        width: 50%;
+        margin: 5px;
     }
+}
+
+.heading {
+    border-bottom: 1px solid black;
+}
+
+.full-heading {
+    margin: 0 33%;
 }

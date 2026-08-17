@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Badge } from "../../lib/models";
 import { getBadges } from "../../lib/api";
 import { generateHash } from "../../lib/helper";
-import Badge_Node from "../../components/Badge_Node/Badge_Node";
+import BadgeNode from "../../components/BadgeNode/BadgeNode";
 
 import "./Home.css";
 
@@ -22,7 +22,7 @@ function Home() {
                 badges.map((badge_obj: Badge) => {
                     return (
                         <div className="badge-holder">
-                            <Badge_Node badge={badge_obj} />
+                            <BadgeNode badge={badge_obj} />
                         </div>
                     );
                 })

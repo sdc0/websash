@@ -1,12 +1,13 @@
 :root {
     --sector-width: 50vw;
+    --search-height: 5vh;
 }
 
 .header-bar {
     display: flex;
     flex-direction: row;
     background: #000;
-    height: 5vh;
+    height: var(--search-height);
 
     .header-item {
         display: flex;

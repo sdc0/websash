@@ -1,19 +1,22 @@
 import { Badge, Student, Issuer, Issuance } from '../../lib/models';
 import { generateSalt, generateHash, fileToBase64 } from "../../lib/helper";
-import "./Create_Form.css";
+
+import "./CreateForm.css";
 
 interface CreateFormProps {
     obj: Badge | Student | Issuer | Issuance;
     setter: React.Dispatch<React.SetStateAction<Badge | Student | Issuer | Issuance>>;
+    creator: (obj) => Promise<boolean>;
 }
 
-function Create_Form({obj, setter, creator}: CreateFormProps) {
+function CreateForm({obj, setter, creator}: CreateFormProps) {
     let types: Record<string, string> = obj.constructor.input_types;
 
     return (
         <div>
             <form onSubmit={async (e) => {
                 e.preventDefault();
+                
                 if (obj.constructor.name === "Issuer" || obj.constructor.name === "Student") {
                     obj.salt = generateSalt();
                     await generateHash(obj.password, obj.salt).then((password) => {
@@ -53,10 +56,10 @@ function Create_Form({obj, setter, creator}: CreateFormProps) {
                         );
                     })
                 }
-                <input type="submit" />
+                <input type="submit" value={`Create ${obj.constructor.name}`} />
             </form>
         </div>
     );
 }
 
-export default Create_Form;
+export default CreateForm;

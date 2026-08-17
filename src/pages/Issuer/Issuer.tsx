@@ -6,25 +6,42 @@ import { Badge, Issuance, Issuer, Student } from "../../lib/models";
 import { createBadge, createStudent, createIssuer, updateBadge, updateStudent, updateIssuer, deleteBadge, deleteStudent, deleteIssuer } from "../../lib/api";
 import { generateSalt, generateHash, fileToBase64 } from "../../lib/helper";
 
-import Object_Selector from "../../components/Object_Selector/Object_Selector";
-import Badge_Node from "../../components/Badge_Node/Badge_Node";
-import Create_Form from "../../components/Create_Form/Create_Form";
+import ObjectSelector from "../../components/ObjectSelector/ObjectSelector";
+import BadgeNode from "../../components/BadgeNode/BadgeNode";
+import CreateForm from "../../components/CreateForm/CreateForm";
+import UpdateForm from "../../components/UpdateForm/UpdateForm";
+import DeleteForm from "../../components/DeleteForm/DeleteForm";
 
 import "./Issuer.css";
 
 function IssuerPage() {
-    const [selectedAdd, setSelectedAdd] = useState<Badge | Student | Issuer | Issuance>(new Badge(0, "", "", "", "", "", ""));
-    const [creator, setCreator] = useState((obj) => (obj) => createBadge(obj));
+    /*const [selectedAdd, setSelectedAdd] = useState<Badge | Student | Issuer | Issuance>(new Badge());
+    const [creator, setCreator] = useState((obj) => (obj) => createBadge(obj));*/
 
-    const [selectedEdit, setSelectedEdit] = useState<Badge | Student | Issuer | Issuance>(new Badge(0, "", "", "", "", "", ""));
-    const [passwordChanged, setPasswordChanged] = useState<boolean>(false);
+    const [addBadge, setAddBadge] = useState<Badge>(new Badge());
+    const [addIssuer, setAddIssuer] = useState<Issuer>(new Issuer());
+    const [addStudent, setAddStudent] = useState<Student>(new Student());
 
-    const [selectedDelete, setSelectedDelete] = useState<Badge | Student | Issuer | Issuance>(new Badge(0, "", "", "", "", "", ""));
+    /*const [selectedEdit, setSelectedEdit] = useState<Badge | Student | Issuer | Issuance>(new Badge());
+    const [passwordChanged, setPasswordChanged] = useState<boolean>(false);*/
+
+    const [editBadge, setEditBadge] = useState<Badge>(new Badge());
+    const [editIssuer, setEditIssuer] = useState<Issuer>(new Issuer());
+    const [editStudent, setEditStudent] = useState<Student>(new Student());
+
+    const [issuerPasswordChanged, setIssuerPasswordChanged] = useState<boolean>(false);
+    const [studentPasswordChanged, setStudentPasswordChanged] = useState<boolean>(false);
+
+    //const [selectedDelete, setSelectedDelete] = useState<Badge | Student | Issuer | Issuance>(new Badge());
+
+    const [deleteBadge, setDeleteBadge] = useState<Badge>(new Badge());
+    const [deleteIssuer, setDeleteIssuer] = useState<Issuer>(new Issuer());
+    const [deleteStudent, setDeleteStudent] = useState<Student>(new Student());
 
     return (
         <div className="admin-page" style={{"grid-column": "1"}}>
             <div className="admin-container">
-                <div className="sub-container form">
+                {/*<div className="sub-container form">
                     <h3>Add New</h3>
                     <select onChange={(e) => {
                         e.preventDefault();
@@ -43,17 +60,33 @@ function IssuerPage() {
                         <option value="issuer">Issuer</option>
                         <option value="student">Student</option>
                     </select>
-                    <Create_Form obj={selectedAdd} setter={setSelectedAdd} creator={creator} />
+                    <CreateForm obj={selectedAdd} setter={setSelectedAdd} creator={creator} />
                 </div>
                 <div className="sub-container badge-container">
                     {
                         (selectedAdd.constructor.name === "Badge") ?
-                        <Badge_Node badge={selectedAdd} full={true} /> : <></>
+                        <BadgeNode badge={selectedAdd} full={true} clickable={false} /> : <></>
                     }
+                </div>*/}
+                <h3 className="heading full-heading">Add New</h3>
+                <div className="form-container">
+                    <div className="sub-container">
+                        <h4 className="heading">Create Badge</h4>
+                        <CreateForm obj={addBadge} setter={setAddBadge} creator={(obj) => createBadge(obj)} />
+                        <BadgeNode badge={addBadge} full={true} clickable={false} />
+                    </div>
+                    <div className="sub-container">
+                        <h4 className="heading">Create Issuer</h4>
+                        <CreateForm obj={addIssuer} setter={setAddIssuer} creator={(obj) => createIssuer(obj)} />
+                    </div>
+                    <div className="sub-container">
+                        <h4 className="heading">Create Student</h4>
+                        <CreateForm obj={addStudent} setter={setAddStudent} creator={(obj) => createStudent(obj)} />
+                    </div>
                 </div>
             </div>
             <div className="admin-container" style={{"grid-column": "2"}}>
-                <div className="sub-container form">
+                {/*<div className="sub-container form">
                     <h3>Edit Existing</h3>
                     <select onChange={(e) => {
                         e.preventDefault();
@@ -71,7 +104,7 @@ function IssuerPage() {
                         <option value="student">Student</option>
                         <option value="issuer">Issuer</option>
                     </select>
-                    <Object_Selector obj={selectedEdit} setter={setSelectedEdit} type={selectedEdit.constructor.name} />
+                    <ObjectSelector obj={selectedEdit} setter={setSelectedEdit} type={selectedEdit.constructor.name} />
                     <div>
                         {
                             Object.entries(selectedEdit.constructor.input_types).map(([field, type]) => {
@@ -131,12 +164,37 @@ function IssuerPage() {
                 <div className="sub-container badge-container">
                     {
                         (selectedEdit.constructor.name === "Badge") ?
-                        <Badge_Node badge={selectedEdit} full={true} /> : <></>
+                        <BadgeNode badge={selectedEdit} full={true} clickable={false} /> : <></>
                     }
+                </div>*/}
+                <h3 className="heading full-heading">Edit Existing</h3>
+                <div className="form-container">
+                    <div className="sub-container">
+                        <h4 className="heading">Edit Badge</h4>
+                        <ObjectSelector obj={editBadge} setter={setEditBadge} type={editBadge.constructor.name} />
+                        <UpdateForm obj={editBadge} setter={setEditBadge} updater={(obj) => updateBadge(obj)} />
+                        <BadgeNode badge={editBadge} full={true} clickable={false} />
+                    </div>
+                    <div className="sub-container">
+                        <h4 className="heading">Edit Issuer</h4>
+                        <ObjectSelector obj={editIssuer} setter={(obj) => {
+                            setIssuerPasswordChanged(false);
+                            return setEditIssuer(obj);
+                        }} type={editIssuer.constructor.name} />
+                        <UpdateForm obj={editIssuer} setter={setEditIssuer} updater={(obj)  => updateIssuer(obj)} />
+                    </div>
+                    <div className="sub-container">
+                        <h4 className="heading">Edit Student</h4>
+                        <ObjectSelector obj={editStudent} setter={(obj) => {
+                            setStudentPasswordChanged(false);
+                            return setEditStudent(obj);
+                        }} type={editStudent.constructor.name} />
+                        <UpdateForm obj={editStudent} setter={setEditStudent} updater={(obj) => updateStudent(obj)} />
+                    </div>
                 </div>
             </div>
-            <div className="admin-container" style={{"grid-column": "1"}}>
-                <div className="sub-container form">
+            <div className="admin-container">
+                {/*<div className="sub-container form">
                     <h3>Delete Existing</h3>
                     <select onChange={(e) => {
                         e.preventDefault();
@@ -182,6 +240,24 @@ function IssuerPage() {
                     }}>
                         Delete {selectedDelete.constructor.name}
                     </button>
+                </div>*/}
+                <h3 className="heading full-heading">Delete Existing</h3>
+                <div className="form-container">
+                    <div className="sub-container">
+                        <h4 className="heading">Delete Badge</h4>
+                        <ObjectSelector obj={deleteBadge} setter={setDeleteBadge} type={deleteBadge.constructor.name} />
+                        <DeleteForm obj={deleteBadge} deleter={(obj) => deleteBadge(deleteBadge)} />
+                    </div>
+                    <div className="sub-container">
+                        <h4 className="heading">Delete Issuer</h4>
+                        <ObjectSelector obj={deleteIssuer} setter={setDeleteIssuer} type={deleteIssuer.constructor.name} />
+                        <DeleteForm obj={deleteIssuer} deleter={(obj) => deleteIssuer(deleteIssuer)} />
+                    </div>
+                    <div className="sub-container">
+                        <h4 className="heading">Delete Student</h4>
+                        <ObjectSelector obj={deleteStudent} setter={setDeleteStudent} type={deleteStudent.constructor.name} />
+                        <DeleteForm obj={deleteStudent} deleter={(obj) => deleteStudent(deleteStudent)} />
+                    </div>
                 </div>
             </div>
         </div>

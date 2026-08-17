@@ -3,14 +3,15 @@ import { fileTypeFromBuffer } from 'file-type';
 import { Buffer } from 'buffer';
 
 import { Badge } from '../../lib/models';
-import "./Badge_Node.css";
+import "./BadgeNode.css";
 
 interface BadgeNodeProps {
     badge: Badge;
     full: boolean;
+    clickable: boolean;
 }
 
-function Badge_Node({badge, full=false}: BadgeNodeProps) {
+function BadgeNode({badge, full=false, clickable=true}: BadgeNodeProps) {
     const nav = useNavigate();
 
     let img = badge.image;
@@ -20,7 +21,7 @@ function Badge_Node({badge, full=false}: BadgeNodeProps) {
     }
 
     return (
-        <div className="badge-tile" onClick={() => nav(`/badge/${badge.id}`)}>
+        <div className="badge-tile" onClick={() => {if (clickable) nav(`/badge/${badge.id}`)}}>
             <div className="badge-image">
                 <img src={img} alt={`${badge.name} Icon`}/>
             </div>
@@ -42,4 +43,4 @@ function Badge_Node({badge, full=false}: BadgeNodeProps) {
     );
 }
 
-export default Badge_Node;
+export default BadgeNode;

@@ -7,7 +7,7 @@ interface ObjectSelectorProps {
     type: string;
 }
 
-function Object_Selector({obj, setter, type}: ObjectSelectorProps) {
+function ObjectSelector({obj, setter, type}: ObjectSelectorProps) {
     const [objList, setObjList] = useState<Badge[] | Issuer[] | Student[] | Issuance[]>([]);
 
     useEffect(() => {
@@ -47,4 +47,4 @@ function Object_Selector({obj, setter, type}: ObjectSelectorProps) {
     );
 }
 
-export default Object_Selector;
+export default ObjectSelector;

@@ -19,7 +19,7 @@ export class Badge {
     constructor();
     constructor(id: number, name: string, abbr: string, type: string, image: string, desc: string, req: string);
     constructor(id?: number, name?: string, abbr?: string, type?: string, image?: string, desc?: string, req?: string) {
-        this.id = id ?? 0;
+        this.id = id ?? -1;
         this.name = name ?? "";
         this.abbr = abbr ?? "";
         this.type = type ?? "";
@@ -74,7 +74,7 @@ export class Issuer {
     constructor(id: number, name: string, department: string, email: string, password: string);
     constructor(id: number, name: string, department: string, email: string, password: string, salt: string);
     constructor(id?: number, name?: string, department?: string, email?: string, password?: string, salt?: string) {
-        this.id = id ?? 0;
+        this.id = id ?? -1;
         this.name = name ?? "";
         this.department = department ?? "";
         this.email = email ?? "";
@@ -124,7 +124,7 @@ export class Student {
     constructor(id: number, name: string, email: string, password: string);
     constructor(id: number, name: string, email: string, password: string, salt: string);
     constructor(id?: number, name?: string, email?: string, password?: string, salt?: string) {
-        this.id = id ?? 0;
+        this.id = id ?? -1;
         this.name = name ?? "";
         this.email = email ?? "";
         this.password = password ?? "";

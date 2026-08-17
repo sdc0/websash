@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { getToken, getStudentBadges } from "../../lib/api";
 import { Badge } from "../../lib/models";
-import Badge_Node from "../../components/Badge_Node/Badge_Node";
+import BadgeNode from "../../components/BadgeNode/BadgeNode";
 
 function Student() {
     const nav = useNavigate();
@@ -25,7 +25,7 @@ function Student() {
         <div className="badge-grid">
             {
                 badges.map((b) => (
-                    <Badge_Node badge={b} />
+                    <BadgeNode badge={b} />
                 ))
             }
         </div>
