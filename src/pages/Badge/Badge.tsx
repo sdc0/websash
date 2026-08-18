@@ -16,10 +16,14 @@ function BadgePage() {
         getBadgeFromID(parseInt(badgeId!)).then((b) => {
             if (b !== null) setBadge(b);
         });
-    }, []);
+    }, [badgeId]);
     
     if (badge != null) { 
-        const mimeInfo = fileTypeFromBuffer(Buffer.from(badge!.image, 'base64'));
+        let img = badge.image;
+        if (badge?.image.slice(0, 4) !== "data") {
+            const mimeInfo = fileTypeFromBuffer(Buffer.from(badge?.image, 'base64'));
+            img = `data:${mimeInfo["mime"]};base64,${badge?.image}`;
+        }
     
         return (
             <div className="badge-page">
@@ -27,7 +31,7 @@ function BadgePage() {
                     <h1>{badge?.name}</h1>
                 </div>
                 <div className="badge-page-image">
-                    <img src={`data:${mimeInfo["mime"]};base64,${badge?.image}`} alt={`${badge?.name} Icon`}/>
+                    <img src={img} alt={`${badge?.name} Icon`}/>
                 </div>
                 <div className="badge-page-details">
                     <h3>{badge?.desc}</h3>

@@ -15,7 +15,7 @@ function BadgeNode({badge, full=false, clickable=true}: BadgeNodeProps) {
     const nav = useNavigate();
 
     let img = badge.image;
-    if (badge.image.slice(0, 4) !== "data") {
+    if (badge.image != null && badge.image.slice(0, 4) !== "data") {
         const mimeInfo = fileTypeFromBuffer(Buffer.from(badge.image, 'base64'));
         img = `data:${mimeInfo["mime"]};base64,${badge.image}`;
     }

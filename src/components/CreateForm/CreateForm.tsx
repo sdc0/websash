@@ -7,17 +7,17 @@ interface CreateFormProps {
     obj: Badge | Student | Issuer | Issuance;
     setter: React.Dispatch<React.SetStateAction<Badge | Student | Issuer | Issuance>>;
     creator: (obj) => Promise<boolean>;
+    type: string;
+    input_types: Record<string, string>;
 }
 
-function CreateForm({obj, setter, creator}: CreateFormProps) {
-    let types: Record<string, string> = obj.constructor.input_types;
-
+function CreateForm({obj, setter, creator, type, input_types}: CreateFormProps) {
     return (
         <div>
             <form onSubmit={async (e) => {
                 e.preventDefault();
                 
-                if (obj.constructor.name === "Issuer" || obj.constructor.name === "Student") {
+                if (type === "Issuer" || type === "Student") {
                     obj.salt = generateSalt();
                     await generateHash(obj.password, obj.salt).then((password) => {
                         obj.password = password;
@@ -27,23 +27,23 @@ function CreateForm({obj, setter, creator}: CreateFormProps) {
                 creator(obj);
             }}>
                 {
-                    Object.entries(types).map(([field, type]) => {
+                    Object.entries(input_types).map(([field, t]) => {
                         return (
                             <div>
                                 <label>
                                     {field}:
-                                    <input id={`${field}-input`} name={field} type={type} onChange={async (e) => {
+                                    <input id={`${field}-input`} name={field} type={t} onChange={async (e) => {
                                         e.preventDefault();
                                         let temp = obj.clone();
 
-                                        if (type === "file") {
+                                        if (t === "file") {
                                             const file = e.target.files?.[0];
                                             if (file) {
                                                 await fileToBase64(file).then((base64) => {
                                                     eval(`temp.${field} = "${base64}"`);
                                                 });
                                             }
-                                        }else if (type === "number") {
+                                        }else if (t === "number") {
                                             eval(`temp.${field} = ${e.target.value}`);
                                         }else {
                                             eval(`temp.${field} = "${e.target.value}"`);
@@ -56,7 +56,7 @@ function CreateForm({obj, setter, creator}: CreateFormProps) {
                         );
                     })
                 }
-                <input type="submit" value={`Create ${obj.constructor.name}`} />
+                <input type="submit" value={`Create ${type}`} />
             </form>
         </div>
     );

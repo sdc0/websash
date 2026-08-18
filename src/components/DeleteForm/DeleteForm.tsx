@@ -1,23 +1,24 @@
 import { fileTypeFromBuffer } from 'file-type';
+import { Buffer } from 'buffer';
 
 import { Badge, Student, Issuer, Issuance } from '../../lib/models';
-import { generateSalt, generateHash, fileToBase64 } from "../../lib/helper";
 
-import Badge_Node from "../../components/BadgeNode/BadgeNode";
+import BadgeNode from "../../components/BadgeNode/BadgeNode";
 
 import "./DeleteForm.css";
 
 interface DeleteFormProps {
     obj: Badge | Student | Issuer | Issuance;
     deleter: (obj) => Promise<boolean>;
+    type: string;
 }
 
-function DeleteForm({obj, deleter}: DeleteFormProps) {
+function DeleteForm({obj, deleter, type}: DeleteFormProps) {
     return (
-        <div>
+        <div className="delete-container">
             {
-                (obj.constructor.name == "Badge") ? (
-                    <Badge_Node badge={obj} full={true} clickable={false} />
+                (type === "Badge") ? (
+                    <BadgeNode badge={obj} full={true} clickable={false} />
                 ) : (
                     <div>
                         {
@@ -51,7 +52,7 @@ function DeleteForm({obj, deleter}: DeleteFormProps) {
 
                 deleter(obj);
             }}>
-                Delete {obj.constructor.name}
+                Delete {type}
             </button>
         </div>
     );
