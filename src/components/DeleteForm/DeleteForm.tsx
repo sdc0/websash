@@ -1,3 +1,5 @@
+import { fileTypeFromBuffer } from 'file-type';
+
 import { Badge, Student, Issuer, Issuance } from '../../lib/models';
 import { generateSalt, generateHash, fileToBase64 } from "../../lib/helper";
 
