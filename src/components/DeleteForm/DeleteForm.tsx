@@ -39,7 +39,7 @@ function DeleteForm({obj, deleter, type}: DeleteFormProps) {
                                 return (
                                     <label>
                                         {name}: 
-                                        <p>{eval(`obj.${name}`)}</p>
+                                        <p>{(name === "date") ? obj[name].toLocaleDateString() : eval(`obj.${name}`)}</p>
                                     </label>
                                 );
                             })

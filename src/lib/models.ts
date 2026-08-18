@@ -161,9 +161,9 @@ export class Issuance {
     date: Date;
 
     static input_types: Record<string, string> = {
-        "badge": "number",
-        "issuer": "number",
-        "student": "number",
+        "badge": "Badge",
+        "issuer": "Issuer",
+        "student": "Student",
         "date": "date"
     };
 

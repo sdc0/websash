@@ -1,4 +1,4 @@
-import { Badge, Student, Issuer } from "./models";
+import { Badge, Student, Issuer, Issuance } from "./models";
 
 const api = "https://websash.dpdns.org";
 
@@ -84,6 +84,26 @@ export async function getIssuers(): Promise<Issuer[] | null> {
     }
 
     return issuers;
+}
+
+export async function getIssuances(): Promise<Issuance[] | null> {
+    let temp: Record<string, string>[] = await (await fetch(`${api}/badge/issue`, {
+        method: "POST",
+        headers: {
+            "content-type": "application/json"
+        },
+        body: JSON.stringify({
+            "token": JSON.parse(localStorage.getItem("token") as string),
+            "token_type": localStorage.getItem("token_type") as string
+        })
+    })).json();
+    let issuances: Issuance[] = [];
+
+    for (let i = 0; i < temp.length; i++) {
+        issuances.push(Issuance.from_json(temp[i]));
+    }
+
+    return issuances;
 }
 
 export async function getBadgeFromName(name: string): Promise<Badge | null> {
@@ -179,6 +199,23 @@ export async function createIssuer(issuer: Issuer): Promise<boolean> {
     }).then((t) => t.ok);
 }
 
+export async function createIssuance(issuance: Issuance): Promise<boolean> {
+    return await fetch(`${api}/badge/issue/add`, {
+        method: "POST",
+        headers: {
+            "content-type": "application/json"
+        },
+        body: JSON.stringify({
+            "token": JSON.parse(localStorage.getItem("token") as string),
+            "token_type": localStorage.getItem("token_type") as string,
+            "badge": issuance.badge,
+            "student": issuance.student,
+            "issuer": issuance.issuer,
+            "date": issuance.date
+        })
+    }).then((t) => t.ok);
+}
+
 export async function updateBadge(badge: Badge): Promise<boolean> {
     return await fetch(`${api}/badge/update/${badge.id}`, {
         method: "POST",
@@ -233,6 +270,23 @@ export async function updateIssuer(issuer: Issuer): Promise<boolean> {
     }).then((t) => t.ok);
 }
 
+export async function updateIssuance(issuance: Issuance): Promise<boolean> {
+    return await fetch(`${api}/badge/issue/update`, {
+        method: "POST",
+        headers: {
+            "content-type": "application/json"
+        },
+        body: JSON.stringify({
+           "token": JSON.parse(localStorage.getItem("token") as string),
+            "token_type": localStorage.getItem("token_type") as string,
+            "badge": issuance.badge,
+            "student": issuance.student,
+            "issuer": issuance.issuer,
+            "date": issuance.date
+        })
+    }).then((t) => t.ok);
+}
+
 export async function deleteBadge(badge: Badge): Promise<boolean> {
     return await fetch(`${api}/badge/delete`, {
         method: "POST",
@@ -271,6 +325,22 @@ export async function deleteIssuer(issuer: Issuer): Promise<boolean> {
             "token": JSON.parse(localStorage.getItem("token") as string),
             "token_type": localStorage.getItem("token_type") as string,
             "id": issuer.id
+        })
+    }).then((t) => t.ok);
+}
+
+export async function deleteIssuance(issuance: Issuance): Promise<boolean> {
+    return await fetch(`${api}/badge/issue/delete`, {
+        method: "POST",
+        headers: {
+            "content-type": "application/json"
+        },
+        body: JSON.stringify({
+            "token": JSON.parse(localStorage.getItem("token") as string),
+            "token_type": localStorage.getItem("token_type") as string,
+            "badge": issuance.badge,
+            "student": issuance.student,
+            "issuer": issuance.issuer
         })
     }).then((t) => t.ok);
 }

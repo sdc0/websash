@@ -1,6 +1,8 @@
 import { Badge, Student, Issuer, Issuance } from '../../lib/models';
 import { generateSalt, generateHash, fileToBase64 } from "../../lib/helper";
 
+import CustomInput from "../../components/CustomInput/CustomInput";
+
 import "./CreateForm.css";
 
 interface CreateFormProps {
@@ -32,7 +34,7 @@ function CreateForm({obj, setter, creator, type, input_types}: CreateFormProps) 
                             <div>
                                 <label>
                                     {field}:
-                                    <input id={`${field}-input`} name={field} type={t} onChange={async (e) => {
+                                    {/*<input id={`${field}-input`} name={field} type={t} onChange={async (e) => {
                                         e.preventDefault();
                                         let temp = obj.clone();
 
@@ -50,7 +52,32 @@ function CreateForm({obj, setter, creator, type, input_types}: CreateFormProps) 
                                         }
                                     
                                         setter(temp);
-                                    }}/>
+                                    }}/>*/}
+                                    <CustomInput type={t} obj={obj} setter={(t === "Badge" || t === "Issuer" || t === "Student" || t === "Issuance") ? (o) => {
+                                        let temp = obj.clone();
+
+                                        //eval(`temp.${field} = ${o.id}`);
+                                        temp[field] = o.id;
+
+                                        setter(temp);
+                                    } : async (target) => {
+                                        let temp = obj.clone();
+
+                                        if (t === "file") {
+                                            const file = target.files?.[0];
+                                            if (file) {
+                                                await fileToBase64(file).then((base64) => {
+                                                    eval(`temp.${field} = "${base64}"`);
+                                                });
+                                            }
+                                        }else if (t === "number") {
+                                            eval(`temp.${field} = ${target.value}`);
+                                        }else {
+                                            eval(`temp.${field} = "${target.value}"`);
+                                        }
+
+                                        setter(temp);
+                                    }} />
                                 </label>
                             </div>
                         );

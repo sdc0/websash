@@ -1,6 +1,8 @@
 import { Badge, Student, Issuer, Issuance } from '../../lib/models';
 import { generateSalt, generateHash, fileToBase64 } from "../../lib/helper";
 
+import CustomInput from "../../components/CustomInput/CustomInput";
+
 import "./UpdateForm.css";
 
 interface UpdateFormProps {
@@ -34,7 +36,7 @@ function UpdateForm({obj, setter, updater, passwordChanged, setPasswordChanged, 
                             <div>
                                 <label>
                                     {field}: 
-                                    <input id={`${field}-input`} type={t} name={field} defaultValue={eval(`obj.${field}`)} onChange={async (e) => {
+                                    {/*<input id={`${field}-input`} type={t} name={field} defaultValue={eval(`obj.${field}`)} onChange={async (e) => {
                                         e.preventDefault();
                                         let temp = obj.clone();
 
@@ -54,7 +56,29 @@ function UpdateForm({obj, setter, updater, passwordChanged, setPasswordChanged, 
                                         if (field === "password") setPasswordChanged(true);
                                     
                                         setter(temp);
-                                    }}/>
+                                    }}/>*/}
+                                    <CustomInput type={t} obj={obj} defaultValue={eval(`obj.${field}`)} setter={(t === "Badge" || t === "Issuer" || t === "Student" || t === "Issuance") ? (obj) => {
+                                        console.log(obj);
+                                    } : async (target) => {
+                                        let temp = obj.clone();
+
+                                        if (t === "file") {
+                                            const file = target.files?.[0];
+                                            if (file) {
+                                                await fileToBase64(file).then((base64) => {
+                                                    eval(`temp.${field} = "${base64}"`);
+                                                });
+                                            }
+                                        }else if (t === "number") {
+                                            eval(`temp.${field} = ${target.value}`);
+                                        }else {
+                                            eval(`temp.${field} = "${target.value}"`);
+                                        }
+
+                                        if (field === "password") setPasswordChanged(true);
+
+                                        setter(temp);
+                                    }} editable={t === "Issuance" && field != "date"} field={field} />
                                 </label>
                             </div>
                         );

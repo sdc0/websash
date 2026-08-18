@@ -99,7 +99,7 @@ function Login() {
         <div className="loginPage">
             <div className="loginBubble">
                 <div className="switch">
-                    <div className="option userOption" onClick={(e) => {
+                    <div className={"option userOption" + (!issuerPage ? " selected" : "")} onClick={(e) => {
                         e.preventDefault();
 
                         setIssuerPage(false);
@@ -107,7 +107,7 @@ function Login() {
                     }}>
                         <p>Student</p>
                     </div>
-                    <div className="option userOption" onClick={(e) => {
+                    <div className={"option userOption" + (issuerPage ? " selected" : "")} onClick={(e) => {
                         e.preventDefault();
 
                         setIssuerPage(true);
@@ -172,14 +172,14 @@ function Login() {
                         <></>
                     ) : (
                         <div className="switch">
-                            <div className="option signUpOption" onClick={(e) => {
+                            <div className={"option signUpOption" + (!signUp ? " selected" : "")} onClick={(e) => {
                                 e.preventDefault();
 
                                 setSignUp(false);
                             }}>
                                 <p>Login</p>
                             </div>
-                            <div className="option signUpOption" onClick={(e) => {
+                            <div className={"option signUpOption" + (signUp ? " selected" : "")} onClick={(e) => {
                                 e.preventDefault();
 
                                 setSignUp(true);

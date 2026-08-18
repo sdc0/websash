@@ -1,7 +1,7 @@
 import { useState } from "react"
 
 import { Badge, Issuance, Issuer, Student } from "../../lib/models";
-import { createBadge, createStudent, createIssuer, updateBadge, updateStudent, updateIssuer, deleteBadge, deleteStudent, deleteIssuer } from "../../lib/api";
+import { createBadge, createStudent, createIssuer, createIssuance, updateBadge, updateStudent, updateIssuer, updateIssuance, deleteBadge, deleteStudent, deleteIssuer, deleteIssuance } from "../../lib/api";
 
 import ObjectSelector from "../../components/ObjectSelector/ObjectSelector";
 import BadgeNode from "../../components/BadgeNode/BadgeNode";
@@ -15,11 +15,12 @@ function IssuerPage() {
     const [addBadge, setAddBadge] = useState<Badge>(new Badge());
     const [addIssuer, setAddIssuer] = useState<Issuer>(new Issuer());
     const [addStudent, setAddStudent] = useState<Student>(new Student());
-    
+    const [addIssuance, setAddIssuance] = useState<Issuance>(new Issuance());
 
     const [editBadge, setEditBadge] = useState<Badge>(new Badge());
     const [editIssuer, setEditIssuer] = useState<Issuer>(new Issuer());
     const [editStudent, setEditStudent] = useState<Student>(new Student());
+    const [editIssuance, setEditIssuance] = useState<Issuance>(new Issuance());
 
     const [issuerPasswordChanged, setIssuerPasswordChanged] = useState<boolean>(false);
     const [studentPasswordChanged, setStudentPasswordChanged] = useState<boolean>(false);
@@ -28,6 +29,7 @@ function IssuerPage() {
     const [delBadge, setDelBadge] = useState<Badge>(new Badge());
     const [delIssuer, setDelIssuer] = useState<Issuer>(new Issuer());
     const [delStudent, setDelStudent] = useState<Student>(new Student());
+    const [delIssuance, setDelIssuance] = useState<Issuance>(new Issuance());
 
     return (
         <div className="admin-page">
@@ -36,16 +38,20 @@ function IssuerPage() {
                 <div className="form-container">
                     <div className="sub-container">
                         <h4 className="heading">Create Badge</h4>
-                        <CreateForm obj={addBadge} setter={setAddBadge} creator={(obj) => createBadge(obj)} type={"Badge"} input_types={Badge.input_types}  />
+                        <CreateForm obj={addBadge} setter={setAddBadge} creator={(obj) => createBadge(obj)} type={"Badge"} input_types={Badge.input_types} />
                         <BadgeNode badge={addBadge} full={true} clickable={false} />
                     </div>
                     <div className="sub-container">
                         <h4 className="heading">Create Issuer</h4>
-                        <CreateForm obj={addIssuer} setter={setAddIssuer} creator={(obj) => createIssuer(obj)} type={"Issuer"} input_types={Issuer.input_types}  />
+                        <CreateForm obj={addIssuer} setter={setAddIssuer} creator={(obj) => createIssuer(obj)} type={"Issuer"} input_types={Issuer.input_types} />
                     </div>
                     <div className="sub-container">
                         <h4 className="heading">Create Student</h4>
-                        <CreateForm obj={addStudent} setter={setAddStudent} creator={(obj) => createStudent(obj)} type={"Student"} input_types={Student.input_types}  />
+                        <CreateForm obj={addStudent} setter={setAddStudent} creator={(obj) => createStudent(obj)} type={"Student"} input_types={Student.input_types} />
+                    </div>
+                    <div className="sub-container">
+                        <h4 className="heading">Create Issuance</h4>
+                        <CreateForm obj={addIssuance} setter={setAddIssuance} creator={(obj) => createIssuance(obj)} type={"Issuance"} input_types={Issuance.input_types} />
                     </div>
                 </div>
             </div>
@@ -74,6 +80,11 @@ function IssuerPage() {
                         }} type={"Student"} />
                         <UpdateForm obj={editStudent} setter={setEditStudent} updater={(obj) => updateStudent(obj)} passwordChanged={studentPasswordChanged} setPasswordChanged={setStudentPasswordChanged} type={"Student"} input_types={Student.input_types} />
                     </div>
+                    <div className="sub-container">
+                        <h4 className="heading">Edit Issuance</h4>
+                        <ObjectSelector obj={editIssuance} setter={setEditIssuance} type={"Issuance"} />
+                        <UpdateForm obj={editIssuance} setter={setEditIssuance} updater={(obj) => {console.log(obj)}} type={"Issuance"} input_types={Issuance.input_types} />
+                    </div>
                 </div>
             </div>
             <div className="admin-container">
@@ -93,6 +104,11 @@ function IssuerPage() {
                         <h4 className="heading">Delete Student</h4>
                         <ObjectSelector obj={delStudent} setter={setDelStudent} type={"Student"} />
                         <DeleteForm obj={delStudent} deleter={(obj) => deleteStudent(delStudent)} type={"Student"} />
+                    </div>
+                    <div className="sub-container">
+                        <h4 className="heading">Delete Issuance</h4>
+                        <ObjectSelector obj={delIssuance} setter={setDelIssuance} type={"Issuance"} />
+                        <DeleteForm obj={delIssuance} deleter={(obj) => deleteIssuance(delIssuance)} type={"Issuance"} />
                     </div>
                 </div>
             </div>
