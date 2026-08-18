@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/websash/static/css/main.9820d367.css",
-    "main.js": "/websash/static/js/main.91456d1b.js",
+    "main.js": "/websash/static/js/main.28521ef4.js",
     "static/media/home.svg": "/websash/static/media/home.6fb1f49b3cc9e169d3935485b2944c75.svg",
     "static/media/profile.svg": "/websash/static/media/profile.513df03bdc21792d9efc52629666a1af.svg",
     "index.html": "/websash/index.html",
     "static/media/search.svg": "/websash/static/media/search.0abd42938414844955c6863fcba62fd5.svg",
     "main.9820d367.css.map": "/websash/static/css/main.9820d367.css.map",
-    "main.91456d1b.js.map": "/websash/static/js/main.91456d1b.js.map"
+    "main.28521ef4.js.map": "/websash/static/js/main.28521ef4.js.map"
   },
   "entrypoints": [
     "static/css/main.9820d367.css",
-    "static/js/main.91456d1b.js"
+    "static/js/main.28521ef4.js"
   ]
 }
