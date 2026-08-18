@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/websash/static/css/main.eda0bb1e.css",
-    "main.js": "/websash/static/js/main.2b21f036.js",
+    "main.css": "/websash/static/css/main.dcc8b545.css",
+    "main.js": "/websash/static/js/main.1d4dfdad.js",
     "static/media/home.svg": "/websash/static/media/home.6fb1f49b3cc9e169d3935485b2944c75.svg",
     "static/media/profile.svg": "/websash/static/media/profile.513df03bdc21792d9efc52629666a1af.svg",
     "index.html": "/websash/index.html",
     "static/media/search.svg": "/websash/static/media/search.0abd42938414844955c6863fcba62fd5.svg",
-    "main.eda0bb1e.css.map": "/websash/static/css/main.eda0bb1e.css.map",
-    "main.2b21f036.js.map": "/websash/static/js/main.2b21f036.js.map"
+    "main.dcc8b545.css.map": "/websash/static/css/main.dcc8b545.css.map",
+    "main.1d4dfdad.js.map": "/websash/static/js/main.1d4dfdad.js.map"
   },
   "entrypoints": [
-    "static/css/main.eda0bb1e.css",
-    "static/js/main.2b21f036.js"
+    "static/css/main.dcc8b545.css",
+    "static/js/main.1d4dfdad.js"
   ]
 }
