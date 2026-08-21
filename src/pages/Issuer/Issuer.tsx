@@ -1,7 +1,7 @@
-import { useState } from "react"
+import { useState, useEffect, useContext } from "react"
 
 import { Badge, Issuance, Issuer, Student } from "../../lib/models";
-import { createBadge, createStudent, createIssuer, createIssuance, updateBadge, updateStudent, updateIssuer, updateIssuance, deleteBadge, deleteStudent, deleteIssuer, deleteIssuance } from "../../lib/api";
+import { getBadges, getStudents, getIssuers, getIssuances, createBadge, createStudent, createIssuer, createIssuance, updateBadge, updateStudent, updateIssuer, updateIssuance, deleteBadge, deleteStudent, deleteIssuer, deleteIssuance } from "../../lib/api";
 
 import ObjectSelector from "../../components/ObjectSelector/ObjectSelector";
 import BadgeNode from "../../components/BadgeNode/BadgeNode";
@@ -9,13 +9,22 @@ import CreateForm from "../../components/CreateForm/CreateForm";
 import UpdateForm from "../../components/UpdateForm/UpdateForm";
 import DeleteForm from "../../components/DeleteForm/DeleteForm";
 
+import { GlobalContext } from "../../components/GlobalContext/GlobalContext";
+
 import "./Issuer.css";
 
 function IssuerPage() {
+    /*const [badges, setBadges] = useState<Badge[]>([]);
+    const [issuers, setIssuers] = useState<Issuer[]>([]);
+    const [students, setStudents] = useState<Student[]>([]);
+    const [issuances, setIssuances] = useState<Issuance[]>([]);
+
+
     const [addBadge, setAddBadge] = useState<Badge>(new Badge());
     const [addIssuer, setAddIssuer] = useState<Issuer>(new Issuer());
     const [addStudent, setAddStudent] = useState<Student>(new Student());
     const [addIssuance, setAddIssuance] = useState<Issuance>(new Issuance());
+
 
     const [editBadge, setEditBadge] = useState<Badge>(new Badge());
     const [editIssuer, setEditIssuer] = useState<Issuer>(new Issuer());
@@ -31,6 +40,26 @@ function IssuerPage() {
     const [delStudent, setDelStudent] = useState<Student>(new Student());
     const [delIssuance, setDelIssuance] = useState<Issuance>(new Issuance());
 
+
+    const refreshBadges = () => { getBadges().then((b) => setBadges(b)); };
+    const refreshIssuers = () => { getIssuers().then((i) => setIssuers(i)); };
+    const refreshStudents = () => { getStudents().then((s) => setStudents(s)); };
+    const refreshIssuances = () => { getIssuances().then((i) => setIssuances(i)); };*/
+
+    const {
+        badges, setBadges, refreshBadges,
+        issuers, setIssuers, refreshIssuers,
+        students, setStudents, refreshStudents,
+        issuances, setIssuances, refreshIssuances
+    } = useContext(GlobalContext);
+
+    useEffect(() => {
+        refreshBadges();
+        refreshIssuers();
+        refreshStudents();
+        refreshIssuances();
+    }, []);
+
     return (
         <div className="admin-page">
             <div className="admin-container">
@@ -38,20 +67,56 @@ function IssuerPage() {
                 <div className="form-container">
                     <div className="sub-container">
                         <h4 className="heading">Create Badge</h4>
-                        <CreateForm obj={addBadge} setter={setAddBadge} creator={(obj) => createBadge(obj)} type={"Badge"} input_types={Badge.input_types} />
-                        <BadgeNode badge={addBadge} full={true} clickable={false} />
+                        <CreateForm 
+                            creator={(obj) => createBadge(obj)} 
+                            type={"Badge"} 
+                            input_types={Badge.input_types} 
+                            refresher={() => {
+                                console.log("refreshing create badge");
+                                refreshBadges();
+                            }} 
+                        />
                     </div>
                     <div className="sub-container">
                         <h4 className="heading">Create Issuer</h4>
-                        <CreateForm obj={addIssuer} setter={setAddIssuer} creator={(obj) => createIssuer(obj)} type={"Issuer"} input_types={Issuer.input_types} />
+                        <CreateForm 
+                            creator={(obj) => createIssuer(obj)} 
+                            type={"Issuer"} 
+                            input_types={Issuer.input_types} 
+                            refresher={() => {
+                                console.log("refreshing create issuer");
+                                refreshIssuers();
+                            }} 
+                        />
                     </div>
                     <div className="sub-container">
                         <h4 className="heading">Create Student</h4>
-                        <CreateForm obj={addStudent} setter={setAddStudent} creator={(obj) => createStudent(obj)} type={"Student"} input_types={Student.input_types} />
+                        <CreateForm 
+                            creator={(obj) => createStudent(obj)} 
+                            type={"Student"} 
+                            input_types={Student.input_types} 
+                            refresher={() => {
+                                console.log("refreshing create student");
+                                refreshStudents();
+                            }} 
+                        />
                     </div>
                     <div className="sub-container">
                         <h4 className="heading">Create Issuance</h4>
-                        <CreateForm obj={addIssuance} setter={setAddIssuance} creator={(obj) => createIssuance(obj)} type={"Issuance"} input_types={Issuance.input_types} />
+                        <CreateForm 
+                            creator={(obj) => createIssuance(obj)} 
+                            type={"Issuance"} 
+                            input_types={Issuance.input_types} 
+                            lists={{
+                                "Badge": badges,
+                                "Issuer": issuers,
+                                "Student": students
+                            }} 
+                            refresher={() => {
+                                console.log("refreshing create issuance");
+                                refreshIssuances();
+                            }} 
+                        />
                     </div>
                 </div>
             </div>
@@ -60,30 +125,51 @@ function IssuerPage() {
                 <div className="form-container">
                     <div className="sub-container">
                         <h4 className="heading">Edit Badge</h4>
-                        <ObjectSelector obj={editBadge} setter={setEditBadge} type={"Badge"} />
-                        <UpdateForm obj={editBadge} setter={setEditBadge} updater={(obj) => updateBadge(obj)} type={"Badge"} input_types={Badge.input_types} />
-                        <BadgeNode badge={editBadge} full={true} clickable={false} />
+                        <UpdateForm 
+                            updater={(obj) => updateBadge(obj)} 
+                            type={"Badge"} 
+                            input_types={Badge.input_types} 
+                            refresher={() => {
+                                console.log("refreshing edit badge");
+                                refreshBadges();
+                            }} 
+                        />
                     </div>
                     <div className="sub-container">
                         <h4 className="heading">Edit Issuer</h4>
-                        <ObjectSelector obj={editIssuer} setter={(obj) => {
-                            setIssuerPasswordChanged(false);
-                            return setEditIssuer(obj);
-                        }} type="Issuer" />
-                        <UpdateForm obj={editIssuer} setter={setEditIssuer} updater={(obj) => updateIssuer(obj)} passwordChanged={issuerPasswordChanged} setPasswordChanged={setIssuerPasswordChanged} type={"Issuer"} input_types={Issuer.input_types} />
+                        <UpdateForm 
+                            updater={(obj) => updateIssuer(obj)} 
+                            type={"Issuer"} 
+                            input_types={Issuer.input_types} 
+                            refresher={() => {
+                                console.log("refreshing edit issuer");
+                                refreshIssuers();
+                            }} 
+                        />
                     </div>
                     <div className="sub-container">
                         <h4 className="heading">Edit Student</h4>
-                        <ObjectSelector obj={editStudent} setter={(obj) => {
-                            setStudentPasswordChanged(false);
-                            return setEditStudent(obj);
-                        }} type={"Student"} />
-                        <UpdateForm obj={editStudent} setter={setEditStudent} updater={(obj) => updateStudent(obj)} passwordChanged={studentPasswordChanged} setPasswordChanged={setStudentPasswordChanged} type={"Student"} input_types={Student.input_types} />
+                        <UpdateForm 
+                            updater={(obj) => updateStudent(obj)} 
+                            type={"Student"} 
+                            input_types={Student.input_types} 
+                            refresher={() => {
+                                console.log("refreshing edit student");
+                                refreshStudents();
+                            }} 
+                        />
                     </div>
                     <div className="sub-container">
                         <h4 className="heading">Edit Issuance</h4>
-                        <ObjectSelector obj={editIssuance} setter={setEditIssuance} type={"Issuance"} />
-                        <UpdateForm obj={editIssuance} setter={setEditIssuance} updater={(obj) => {console.log(obj)}} type={"Issuance"} input_types={Issuance.input_types} />
+                        <UpdateForm 
+                            updater={(obj) => updateIssuance(obj)} 
+                            type={"Issuance"} 
+                            input_types={Issuance.input_types} 
+                            refresher={() => {
+                                console.log("refreshing edit issuance");
+                                refreshIssuances();
+                            }} 
+                        />
                     </div>
                 </div>
             </div>
@@ -92,23 +178,47 @@ function IssuerPage() {
                 <div className="form-container">
                     <div className="sub-container">
                         <h4 className="heading">Delete Badge</h4>
-                        <ObjectSelector obj={delBadge} setter={setDelBadge} type={"Badge"} />
-                        <DeleteForm obj={delBadge} deleter={(obj) => deleteBadge(delBadge)} type={"Badge"} />
+                        <DeleteForm 
+                            deleter={(obj) => deleteBadge(delBadge)} 
+                            type={"Badge"} 
+                            refresher={() => {
+                                console.log("refreshing delete badge");
+                                refreshBadges();
+                            }} 
+                        />
                     </div>
                     <div className="sub-container">
                         <h4 className="heading">Delete Issuer</h4>
-                        <ObjectSelector obj={delIssuer} setter={setDelIssuer} type={"Issuer"} />
-                        <DeleteForm obj={delIssuer} deleter={(obj) => deleteIssuer(delIssuer)} type={"Issuer"} />
+                        <DeleteForm 
+                            deleter={(obj) => deleteIssuer(delIssuer)} 
+                            type={"Issuer"} 
+                            refresher={() => {
+                                console.log("refreshing delete issuer");
+                                refreshIssuers();
+                            }} 
+                        />
                     </div>
                     <div className="sub-container">
                         <h4 className="heading">Delete Student</h4>
-                        <ObjectSelector obj={delStudent} setter={setDelStudent} type={"Student"} />
-                        <DeleteForm obj={delStudent} deleter={(obj) => deleteStudent(delStudent)} type={"Student"} />
+                        <DeleteForm 
+                            deleter={(obj) => deleteStudent(delStudent)} 
+                            type={"Student"} 
+                            refresher={() => {
+                                console.log("refreshing delete student");
+                                refreshStudents();
+                            }} 
+                        />
                     </div>
                     <div className="sub-container">
                         <h4 className="heading">Delete Issuance</h4>
-                        <ObjectSelector obj={delIssuance} setter={setDelIssuance} type={"Issuance"} />
-                        <DeleteForm obj={delIssuance} deleter={(obj) => deleteIssuance(delIssuance)} type={"Issuance"} />
+                        <DeleteForm 
+                            deleter={(obj) => deleteIssuance(delIssuance)} 
+                            type={"Issuance"} 
+                            refresher={() => {
+                                console.log("refreshing delete issuance");
+                                refreshIssuances();
+                            }} 
+                        />
                     </div>
                 </div>
             </div>

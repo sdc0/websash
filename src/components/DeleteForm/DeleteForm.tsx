@@ -1,59 +1,91 @@
 import { fileTypeFromBuffer } from 'file-type';
 import { Buffer } from 'buffer';
+import { useState, useContext } from "react";
 
 import { Badge, Student, Issuer, Issuance } from '../../lib/models';
 
 import BadgeNode from "../../components/BadgeNode/BadgeNode";
+import ObjectSelector from "../../components/ObjectSelector/ObjectSelector";
+
+import { GlobalContext } from "../../components/GlobalContext/GlobalContext";
 
 import "./DeleteForm.css";
 
 interface DeleteFormProps {
-    obj: Badge | Student | Issuer | Issuance;
     deleter: (obj) => Promise<boolean>;
     type: string;
+    refresher: () => void;
 }
 
-function DeleteForm({obj, deleter, type}: DeleteFormProps) {
+function DeleteForm({deleter, type, refresher}: DeleteFormProps) {
+    const [obj, setObj] = useState<Badge | Issuer | Student | Issuance>(
+        (type === "Badge") ? new Badge() : (
+        (type === "Issuer") ? new Issuer() : (
+        (type === "Student") ? new Student() : 
+        new Issuance()
+    )));
+
+    const {
+        badges, setBadges, refreshBadges,
+        issuers, setIssuers, refreshIssuers,
+        students, setStudents, refreshStudents,
+        issuances, setIssuances, refreshIssuances
+    } = useContext(GlobalContext);
+
     return (
-        <div className="delete-container">
-            {
-                (type === "Badge") ? (
-                    <BadgeNode badge={obj} full={true} clickable={false} />
-                ) : (
-                    <div>
-                        {
-                            Object.getOwnPropertyNames(obj).map((name) => {
-                                if (name === "image") {
-                                    let img = obj.image;
-                                    
-                                    if (img.slice(0, 4) !== "data") {
-                                        const mimeInfo = fileTypeFromBuffer(Buffer.from(img, 'base64'));
-                                        img = `data:${mimeInfo["mime"]};base64,${obj.image}`;
+        <div>
+            <ObjectSelector 
+                obj={obj} 
+                setter={setObj} 
+                type={type} 
+                list={
+                    (type === "Badge") ? badges : (
+                    (type === "Issuer") ? issuers : (
+                    (type === "Student") ? students : 
+                    issuances
+                ))} 
+            />
+            <div className="delete-container">
+                {
+                    (type === "Badge") ? (
+                        <BadgeNode badge={obj} full={true} clickable={false} />
+                    ) : (
+                        <div>
+                            {
+                                Object.getOwnPropertyNames(obj).map((name) => {
+                                    if (name === "image") {
+                                        let img = obj.image;
+                                        
+                                        if (img.slice(0, 4) !== "data") {
+                                            const mimeInfo = fileTypeFromBuffer(Buffer.from(img, 'base64'));
+                                            img = `data:${mimeInfo["mime"]};base64,${obj.image}`;
+                                        }
+                                        
+                                        return (
+                                            <img src={img} alt={`${obj.name} Icon`}/>
+                                        );
                                     }
                                     
                                     return (
-                                        <img src={img} alt={`${obj.name} Icon`}/>
+                                        <label>
+                                            {name}: 
+                                            <p>{(name === "date") ? obj[name].toLocaleDateString() : obj[name]}</p>
+                                        </label>
                                     );
-                                }
-                                
-                                return (
-                                    <label>
-                                        {name}: 
-                                        <p>{(name === "date") ? obj[name].toLocaleDateString() : eval(`obj.${name}`)}</p>
-                                    </label>
-                                );
-                            })
-                        }
-                    </div>
-                )
-            }
-            <button onClick={(e) => {
-                e.preventDefault();
+                                })
+                            }
+                        </div>
+                    )
+                }
+                <button onClick={async (e) => {
+                    e.preventDefault();
 
-                deleter(obj);
-            }}>
-                Delete {type}
-            </button>
+                    await deleter(obj);
+                    if (refresher != null) refresher();
+                }}>
+                    Delete {type}
+                </button>
+            </div>
         </div>
     );
 }

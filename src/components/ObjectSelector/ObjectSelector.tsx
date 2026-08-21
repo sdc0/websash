@@ -1,15 +1,13 @@
-import { useEffect, useState, useRef } from "react";
-import { getBadges, getStudents, getIssuers, getIssuances } from "../../lib/api";
+import { useEffect, useRef } from "react";
 
 interface ObjectSelectorProps {
     obj: Badge | Student | Issuer | Issuance;
     setter: React.Dispatch<React.SetStateAction<Badge | Student | Issuer | Issuance>>;
     type: string;
+    list: Badge[] | Issuer[] | Student[] | Issuance[];
 }
 
-function ObjectSelector({obj, setter, type}: ObjectSelectorProps) {
-    const [objList, setObjList] = useState<Badge[] | Issuer[] | Student[] | Issuance[]>([]);
-
+function ObjectSelector({obj, setter, type, list}: ObjectSelectorProps) {
     const setterRef = useRef(setter);
 
     useEffect(() => {
@@ -17,42 +15,21 @@ function ObjectSelector({obj, setter, type}: ObjectSelectorProps) {
     }, [setter]);
 
     useEffect(() => {
-        if (type === "Badge") {
-            getBadges().then((badges) => {
-                setObjList(badges);
-                if (badges.length > 0) setterRef.current(badges[0]);
-            });
-        } else if (type === "Student") {
-            getStudents().then((students) => {
-                setObjList(students);
-                if (students.length > 0) setterRef.current(students[0]);
-            });
-        } else if (type === "Issuer") {
-            getIssuers().then((issuers) => {
-                setObjList(issuers);
-                if (issuers.length > 0) setterRef.current(issuers[0]);
-            });
-        } else if (type === "Issuance") {
-            getIssuances().then((issuances) => {
-                setObjList(issuances);
-                console.log(issuances);
-                if (issuances.length > 0) setterRef.current(issuances[0]);
-            });
-        }
-    }, [type]);
+        if (list != null && list.length > 0) setterRef.current(list[0]);
+    }, [list]);
 
     return (
         <div>
             <select onChange={async (e) => {
                 e.preventDefault();
-                await setterRef.current(objList[e.target.value]);
+                await setterRef.current(list[e.target.value]);
             }}>
                 {
-                    objList.map((o: Badge | Issuer | Student | Issuance, i: number) => {
+                    (list != null) ? list.map((o: Badge | Issuer | Student | Issuance, i: number) => {
                         return (
                             <option value={i}>{(type === "Issuance") ? o.badge : o.name}</option>
                         );
-                    })
+                    }) : <></>
                 }
             </select>
         </div>

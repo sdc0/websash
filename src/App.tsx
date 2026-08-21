@@ -8,19 +8,22 @@ import BadgePage from './pages/Badge/Badge';
 import IssuerPage from './pages/Issuer/Issuer';
 
 import Header from './components/Header/Header';
+import { GlobalProvider } from "./components/GlobalContext/GlobalContext";
 
 function App() {
     return (
-        <div className="App">
-            <Header />
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/student" element={<Student />} />
-                <Route path="/issuer" element={<IssuerPage />} />
-                <Route path="/badge/:badgeId" element={<BadgePage />} />
-            </Routes>
-        </div>
+        <GlobalProvider>
+            <div className="App">
+                <Header />
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/student" element={<Student />} />
+                    <Route path="/issuer" element={<IssuerPage />} />
+                    <Route path="/badge/:badgeId" element={<BadgePage />} />
+                </Routes>
+            </div>
+        </GlobalProvider>
     );
 }
 

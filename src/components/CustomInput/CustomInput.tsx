@@ -7,14 +7,15 @@ interface CustomInputProps {
     defaultValue: string;
     editable: boolean;
     field: string;
+    list: Badge[] | Issuer[] | Student[] | Issuance[];
 }
 
-function CustomInput({type, obj, setter, defaultValue, editable=true, field}: CustomInputProps) {
+function CustomInput({type, obj, setter, defaultValue, editable=true, field, list}: CustomInputProps) {
     return (
         <div>
             {
                 (type === "Badge" || type === "Student" || type === "Issuer" || type === "Issuance") ? (
-                    (editable) ? <ObjectSelector obj={obj} setter={setter} type={type} /> : (
+                    (editable) ? <ObjectSelector obj={obj} setter={setter} type={type} list={list} /> : (
                         <p>{obj[field]}</p>
                     )
                 ) : (

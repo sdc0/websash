@@ -1,90 +1,98 @@
+import { useState } from "react";
+
 import { Badge, Student, Issuer, Issuance } from '../../lib/models';
 import { generateSalt, generateHash, fileToBase64 } from "../../lib/helper";
 
 import CustomInput from "../../components/CustomInput/CustomInput";
+import BadgeNode from "../../components/BadgeNode/BadgeNode";
 
 import "./CreateForm.css";
 
 interface CreateFormProps {
-    obj: Badge | Student | Issuer | Issuance;
-    setter: React.Dispatch<React.SetStateAction<Badge | Student | Issuer | Issuance>>;
     creator: (obj) => Promise<boolean>;
     type: string;
     input_types: Record<string, string>;
+    lists: {
+        "Badge": Badge[],  
+        "Issuer": Issuer[],  
+        "Student": Student[]
+    };
+    refresher: () => void;
 }
 
-function CreateForm({obj, setter, creator, type, input_types}: CreateFormProps) {
+function CreateForm({creator, type, input_types, lists, refresher}: CreateFormProps) {
+    const [obj, setObj] = useState<Badge | Issuer | Student | Issuance>(
+        (type === "Badge") ? new Badge() : (
+        (type === "Issuer") ? new Issuer() : (
+        (type === "Student") ? new Student() : 
+        new Issuance()
+    )));
+
     return (
         <div>
-            <form onSubmit={async (e) => {
-                e.preventDefault();
-                
-                if (type === "Issuer" || type === "Student") {
-                    obj.salt = generateSalt();
-                    await generateHash(obj.password, obj.salt).then((password) => {
-                        obj.password = password;
-                    });
-                }
+            <div>
+                <form onSubmit={async (e) => {
+                    e.preventDefault();
+                    
+                    if (type === "Issuer" || type === "Student") {
+                        obj.salt = generateSalt();
+                        await generateHash(obj.password, obj.salt).then((password) => {
+                            obj.password = password;
+                        });
+                    }
 
-                creator(obj);
-            }}>
-                {
-                    Object.entries(input_types).map(([field, t]) => {
-                        return (
-                            <div>
-                                <label>
-                                    {field}:
-                                    {/*<input id={`${field}-input`} name={field} type={t} onChange={async (e) => {
-                                        e.preventDefault();
-                                        let temp = obj.clone();
+                    await creator(obj);
+                    if (refresher != null) refresher();
 
-                                        if (t === "file") {
-                                            const file = e.target.files?.[0];
-                                            if (file) {
-                                                await fileToBase64(file).then((base64) => {
-                                                    eval(`temp.${field} = "${base64}"`);
-                                                });
+                    // clear form
+                    if (type === "Badge") setObj(new Badge());
+                    else if (type === "Issuer") setObj(new Issuer());
+                    else if (type === "Student") setObj(new Student());
+                }}>
+                    {
+                        Object.entries(input_types).map(([field, t]) => {
+                            return (
+                                <div>
+                                    <label>
+                                        {field}:
+                                        <CustomInput type={t} obj={obj} setter={(t === "Badge" || t === "Issuer" || t === "Student" || t === "Issuance") ? (o) => {
+                                            let temp = obj.clone();
+                                            
+                                            temp[field] = o.id;
+
+                                            setObj(temp);
+                                        } : async (target) => {
+                                            let temp = obj.clone();
+                                            
+                                            if (t === "file") {
+                                                const file = target.files?.[0];
+                                                if (file) {
+                                                    await fileToBase64(file).then((base64) => {
+                                                        //eval(`temp.${field} = "${base64}"`);
+                                                        temp[field] = base64;
+                                                    });
+                                                }
+                                            }else if (t === "number") {
+                                                //eval(`temp.${field} = ${target.value}`);
+                                                temp[field] = target.value;
+                                            }else {
+                                                //eval(`temp.${field} = "${target.value}"`);
+                                                temp[field] = target.value;
                                             }
-                                        }else if (t === "number") {
-                                            eval(`temp.${field} = ${e.target.value}`);
-                                        }else {
-                                            eval(`temp.${field} = "${e.target.value}"`);
-                                        }
-                                    
-                                        setter(temp);
-                                    }}/>*/}
-                                    <CustomInput type={t} obj={obj} setter={(t === "Badge" || t === "Issuer" || t === "Student" || t === "Issuance") ? (o) => {
-                                        let temp = obj.clone();
-
-                                        //eval(`temp.${field} = ${o.id}`);
-                                        temp[field] = o.id;
-
-                                        setter(temp);
-                                    } : async (target) => {
-                                        let temp = obj.clone();
-
-                                        if (t === "file") {
-                                            const file = target.files?.[0];
-                                            if (file) {
-                                                await fileToBase64(file).then((base64) => {
-                                                    eval(`temp.${field} = "${base64}"`);
-                                                });
-                                            }
-                                        }else if (t === "number") {
-                                            eval(`temp.${field} = ${target.value}`);
-                                        }else {
-                                            eval(`temp.${field} = "${target.value}"`);
-                                        }
-
-                                        setter(temp);
-                                    }} />
-                                </label>
-                            </div>
-                        );
-                    })
-                }
-                <input type="submit" value={`Create ${type}`} />
-            </form>
+                                            
+                                            setObj(temp);
+                                        }} list={(t === "Badge" || t === "Issuer" || t === "Student") ? lists[t] : []} />
+                                    </label>
+                                </div>
+                            );
+                        })
+                    }
+                    <input type="submit" value={`Create ${type}`} />
+                </form>
+            </div>
+            {
+                (type === "Badge") ? <BadgeNode badge={obj} full={true} clickable={false} /> : <></>
+            }
         </div>
     );
 }
