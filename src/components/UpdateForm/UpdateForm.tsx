@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import { Badge, Student, Issuer, Issuance } from '../../lib/models';
 import { generateSalt, generateHash, fileToBase64 } from "../../lib/helper";
@@ -27,6 +27,15 @@ function UpdateForm({updater, type, input_types, list, refresher}: UpdateFormPro
         new Issuance()
     )));
     const [passwordChanged, setPasswordChanged] = useState<boolean>(false);
+
+    const [showDialog, setShowDialog] = useState<boolean>(false);
+    const [dialogSuccess, setDialogSuccess] = useState<boolean>();
+
+    useEffect(() => {
+        return () => {
+            setShowDialog(false);
+        };
+    }, []);
 
     const {
         badges, setBadges, refreshBadges,
@@ -59,8 +68,15 @@ function UpdateForm({updater, type, input_types, list, refresher}: UpdateFormPro
                         });
                     }
 
-                    await updater(obj);
-                    if (refresher != null) refresher();
+                    let success = await updater(obj);
+                    setDialogSuccess(success);
+                    setShowDialog(true);
+
+                    setTimeout(() => {
+                        setShowDialog(false);
+                    }, 3000);
+                
+                    if (success && refresher != null) refresher();
                 }}>
                     {
                         Object.entries(input_types).map(([field, t]) => {
@@ -104,6 +120,15 @@ function UpdateForm({updater, type, input_types, list, refresher}: UpdateFormPro
                     }
                     <input type="submit" value={`Update ${type}`} />
                 </form>
+                {
+                    showDialog ? (
+                        dialogSuccess ? (
+                            <p className="success-msg">{type} created successfully</p>
+                        ) : (
+                            <p className="failure-msg">Failed to create {type}</p>
+                        )
+                    ) : <></>
+                }
             </div>
             {
                 (type === "Badge") ? <BadgeNode badge={obj} full={true} clickable={false} /> : <></>

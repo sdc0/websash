@@ -1,6 +1,6 @@
 import { fileTypeFromBuffer } from 'file-type';
 import { Buffer } from 'buffer';
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import { Badge, Student, Issuer, Issuance } from '../../lib/models';
 
@@ -24,6 +24,15 @@ function DeleteForm({deleter, type, refresher}: DeleteFormProps) {
         (type === "Student") ? new Student() : 
         new Issuance()
     )));
+
+    const [showDialog, setShowDialog] = useState<boolean>(false);
+    const [dialogSuccess, setDialogSuccess] = useState<boolean>();
+
+    useEffect(() => {
+        return () => {
+            setShowDialog(false);
+        };
+    }, []);
 
     const {
         badges, setBadges, refreshBadges,
@@ -80,12 +89,28 @@ function DeleteForm({deleter, type, refresher}: DeleteFormProps) {
                 <button onClick={async (e) => {
                     e.preventDefault();
 
-                    await deleter(obj);
-                    if (refresher != null) refresher();
+                    let success = await deleter(obj);
+                    setDialogSuccess(success);
+                    setShowDialog(true);
+
+                    setTimeout(() => {
+                        setShowDialog(false);
+                    }, 3000);
+
+                    if (success && refresher != null) refresher();
                 }}>
                     Delete {type}
                 </button>
             </div>
+            {
+                showDialog ? (
+                    dialogSuccess ? (
+                        <p className="success-msg">{type} created successfully</p>
+                    ) : (
+                        <p className="failure-msg">Failed to create {type}</p>
+                    )
+                ) : <></>
+            }
         </div>
     );
 }

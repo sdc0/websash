@@ -179,7 +179,7 @@ function IssuerPage() {
                     <div className="sub-container">
                         <h4 className="heading">Delete Badge</h4>
                         <DeleteForm 
-                            deleter={(obj) => deleteBadge(delBadge)} 
+                            deleter={(obj) => deleteBadge(obj)} 
                             type={"Badge"} 
                             refresher={() => {
                                 console.log("refreshing delete badge");
@@ -190,7 +190,7 @@ function IssuerPage() {
                     <div className="sub-container">
                         <h4 className="heading">Delete Issuer</h4>
                         <DeleteForm 
-                            deleter={(obj) => deleteIssuer(delIssuer)} 
+                            deleter={(obj) => deleteIssuer(obj)} 
                             type={"Issuer"} 
                             refresher={() => {
                                 console.log("refreshing delete issuer");
@@ -201,7 +201,7 @@ function IssuerPage() {
                     <div className="sub-container">
                         <h4 className="heading">Delete Student</h4>
                         <DeleteForm 
-                            deleter={(obj) => deleteStudent(delStudent)} 
+                            deleter={(obj) => deleteStudent(obj)} 
                             type={"Student"} 
                             refresher={() => {
                                 console.log("refreshing delete student");
@@ -212,7 +212,7 @@ function IssuerPage() {
                     <div className="sub-container">
                         <h4 className="heading">Delete Issuance</h4>
                         <DeleteForm 
-                            deleter={(obj) => deleteIssuance(delIssuance)} 
+                            deleter={(obj) => deleteIssuance(obj)} 
                             type={"Issuance"} 
                             refresher={() => {
                                 console.log("refreshing delete issuance");
