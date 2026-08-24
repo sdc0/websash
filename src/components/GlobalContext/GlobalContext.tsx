@@ -15,12 +15,15 @@ export function GlobalProvider({children}) {
     const refreshStudents = () => { getStudents().then((s) => setStudents(s)); };
     const refreshIssuances = () => { getIssuances().then((i) => setIssuances(i)); };
 
+    const [searchText, setSearchText] = useState("");
+
     return (
         <GlobalContext.Provider value={{
             badges, setBadges, refreshBadges,
             issuers, setIssuers, refreshIssuers,
             students, setStudents, refreshStudents,
-            issuances, setIssuances, refreshIssuances
+            issuances, setIssuances, refreshIssuances,
+            searchText, setSearchText
         }}>
             {children}
         </GlobalContext.Provider>

@@ -114,6 +114,10 @@ function IssuerPage() {
                             }} 
                             refresher={() => {
                                 console.log("refreshing create issuance");
+                                
+                                refreshBadges();
+                                refreshIssuers();
+                                refreshStudents();
                                 refreshIssuances();
                             }} 
                         />

@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 
 import { Badge, Student, Issuer, Issuance } from '../../lib/models';
 import { generateSalt, generateHash, fileToBase64 } from "../../lib/helper";
@@ -31,6 +31,12 @@ function UpdateForm({updater, type, input_types, list, refresher}: UpdateFormPro
     const [showDialog, setShowDialog] = useState<boolean>(false);
     const [dialogSuccess, setDialogSuccess] = useState<boolean>();
 
+    const setterRef = useRef(setObj);
+
+    useEffect(() => {
+        setterRef.current = setObj;
+    }, [setObj]);
+
     useEffect(() => {
         return () => {
             setShowDialog(false);
@@ -48,7 +54,7 @@ function UpdateForm({updater, type, input_types, list, refresher}: UpdateFormPro
         <div>
             <ObjectSelector 
                 obj={obj} 
-                setter={setObj} 
+                setter={setterRef.current} 
                 type={type} 
                 list={
                     (type === "Badge") ? badges : (
@@ -89,7 +95,7 @@ function UpdateForm({updater, type, input_types, list, refresher}: UpdateFormPro
 
                                             temp[field] = o.id;
 
-                                            setObj(temp);
+                                            setterRef.current(temp);
                                         } : async (target) => {
                                             let temp = obj.clone();
 
@@ -111,7 +117,7 @@ function UpdateForm({updater, type, input_types, list, refresher}: UpdateFormPro
 
                                             if (field === "password") setPasswordChanged(true);
 
-                                            setObj(temp);
+                                            setterRef.current(temp);
                                         }} editable={t === "Issuance" && field !== "date"} field={field} list={list} />
                                     </label>
                                 </div>
@@ -123,9 +129,9 @@ function UpdateForm({updater, type, input_types, list, refresher}: UpdateFormPro
                 {
                     showDialog ? (
                         dialogSuccess ? (
-                            <p className="success-msg">{type} created successfully</p>
+                            <p className="success-msg">{type} updated successfully</p>
                         ) : (
-                            <p className="failure-msg">Failed to create {type}</p>
+                            <p className="failure-msg">Failed to update {type}</p>
                         )
                     ) : <></>
                 }

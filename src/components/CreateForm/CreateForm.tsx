@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { Badge, Student, Issuer, Issuance } from '../../lib/models';
 import { generateSalt, generateHash, fileToBase64 } from "../../lib/helper";
@@ -31,6 +31,12 @@ function CreateForm({creator, type, input_types, lists, refresher}: CreateFormPr
     const [showDialog, setShowDialog] = useState<boolean>(false);
     const [dialogSuccess, setDialogSuccess] = useState<boolean>();
 
+    const setterRef = useRef(setObj);
+
+    useEffect(() => {
+        setterRef.current = setObj;
+    }, [setObj]);
+
     useEffect(() => {
         return () => {
             setShowDialog(false);
@@ -62,10 +68,10 @@ function CreateForm({creator, type, input_types, lists, refresher}: CreateFormPr
                         if (refresher != null) refresher();
 
                         // clear form
-                        if (type === "Badge") setObj(new Badge());
-                        else if (type === "Issuer") setObj(new Issuer());
-                        else if (type === "Student") setObj(new Student());
-                        else if (type === "Issuance") setObj(new Issuance());
+                        if (type === "Badge") setterRef.current(new Badge());
+                        else if (type === "Issuer") setterRef.current(new Issuer());
+                        else if (type === "Student") setterRef.current(new Student());
+                        else if (type === "Issuance") setterRef.current(new Issuance());
 
                         e.target.reset();
                     }
@@ -81,7 +87,8 @@ function CreateForm({creator, type, input_types, lists, refresher}: CreateFormPr
                                             
                                             temp[field] = o.id;
 
-                                            setObj(temp);
+                                            setterRef.current(temp);
+                                            console.log(temp);
                                         } : async (target) => {
                                             let temp = obj.clone();
                                             
@@ -101,7 +108,8 @@ function CreateForm({creator, type, input_types, lists, refresher}: CreateFormPr
                                                 temp[field] = target.value;
                                             }
                                             
-                                            setObj(temp);
+                                            setterRef.current(temp);
+                                            console.log(temp);
                                         }} list={(t === "Badge" || t === "Issuer" || t === "Student") ? lists[t] : []} />
                                     </label>
                                 </div>

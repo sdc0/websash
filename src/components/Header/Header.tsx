@@ -1,12 +1,24 @@
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { GlobalContext } from "../GlobalContext/GlobalContext";
 
 import home from "../../home.svg";
 import profile from "../../profile.svg";
 import search from "../../search.svg";
+
 import "./Header.css";
 
 function Header() {
     const nav = useNavigate();
+
+    const {
+        badges, setBadges, refreshBadges,
+        issuers, setIssuers, refreshIssuers,
+        students, setStudents, refreshStudents,
+        issuances, setIssuances, refreshIssuances,
+        searchText, setSearchText
+    } = useContext(GlobalContext);
 
     return (
         <div className="header-bar">
@@ -19,7 +31,10 @@ function Header() {
             <div className="header-sector" id="search-sector">
                 <div className="header-item" id="search">
                     <img src={search} alt=''/>
-                    <input type="text" placeholder="Search for badges..." />
+                    <input type="text" placeholder="Search for badges..." onChange={(e) => {
+                        e.preventDefault();
+                        setSearchText(e.target.value.toLowerCase());
+                    }} />
                 </div>
             </div>
             <div className="header-sector" id="login-sector">

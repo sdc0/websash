@@ -1,25 +1,36 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import { Badge } from "../../lib/models";
 import { getBadges } from "../../lib/api";
 
 import BadgeNode from "../../components/BadgeNode/BadgeNode";
 
+import { GlobalContext } from "../../components/GlobalContext/GlobalContext";
+
 import "./Home.css";
 
 function Home() {
-    const [badges, setBadges] = useState<Badge[]>([]);
+    const {
+        badges, setBadges, refreshBadges,
+        issuers, setIssuers, refreshIssuers,
+        students, setStudents, refreshStudents,
+        issuances, setIssuances, refreshIssuances,
+        searchText, setSearchText
+    } = useContext(GlobalContext);
+    
+    const [filtered, setFiltered] = useState<Badge[]>(badges);
 
     useEffect(() => {
-        getBadges().then((b) => {
-            if (b !== null) setBadges(b);
-        });
-    }, []);
+        setFiltered(badges.filter((b) => {
+            if (searchText === "") return b;
+            else return b.name.toLowerCase().includes(searchText);
+        }));
+    }, [badges, searchText]);
 
     return (
         <div className="badge-grid">
             {
-                badges.map((badge_obj: Badge) => {
+                filtered.map((badge_obj: Badge) => {
                     return (
                         <div className="badge-holder">
                             <BadgeNode badge={badge_obj} />
