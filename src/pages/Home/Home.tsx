@@ -27,6 +27,10 @@ function Home() {
         }));
     }, [badges, searchText]);
 
+    useEffect(() => {
+        refreshBadges();
+    }, []);
+
     return (
         <div className="badge-grid">
             {

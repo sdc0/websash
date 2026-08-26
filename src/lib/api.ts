@@ -46,6 +46,26 @@ export async function getBadges(): Promise<Badge[] | null> {
     return badges;
 }
 
+export async function getBadgesForIssuer(): Promise<Badge[] | null> {
+    let temp: Record<string, string>[] = await (await fetch(`${api}/badge`), {
+        method: "POST",
+        headers: {
+            "content-type": "application/json"
+        },
+        body: JSON.stringify({
+            "token": JSON.parse(localStorage.getItem("token") as string),
+            "token_type": localStorage.getItem("token_type") as string
+        })
+    }).json();
+    let badges: Badge[] = [];
+
+    for (let i = 0; i < temp.length; i++) {
+        badges.push(Badge.from_json(temp[i]));
+    }
+
+    return badges;
+}
+
 export async function getStudents(): Promise<Student[] | null> {
     let temp: Record<string, string>[] = await (await fetch(`${api}/student`, {
         method: "POST",
