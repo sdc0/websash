@@ -33,11 +33,12 @@ function BadgeNode({badge, full=false, clickable=true}: BadgeNodeProps) {
                             <p>{badge.id}</p>
                             <p>{badge.abbr}</p>
                             <p>{badge.type}</p>
+                            <p>{badge.short}</p>
+                            <p>{badge.desc}</p>
+                            <p>{badge.req}</p>
                         </>
-                    ) : (<></>)
+                    ) : (<p>{badge.short}</p>)
                 }
-                <p>{badge.desc}</p>
-                <p>{badge.req}</p>
             </div>
         </div>
     );
