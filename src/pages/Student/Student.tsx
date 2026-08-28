@@ -1,13 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useContext } from "react";
 
-import { getToken, getStudentBadges } from "../../lib/api";
+import { getStudentBadges } from "../../lib/api";
 import { Badge } from "../../lib/models";
+
 import BadgeNode from "../../components/BadgeNode/BadgeNode";
+import { GlobalContext } from "../../components/GlobalContext/GlobalContext";
 
 function Student() {
-    const nav = useNavigate();
-    const [badges, setBadges] = useState<Badge[]>([]);
+    const {
+        badges, setBadges, 
+        issuers, setIssuers, 
+        students, setStudents, 
+        issuances, setIssuances, 
+        searchText, setSearchText
+    } = useContext(GlobalContext);
+
+    const refreshBadges = () => {
+        getStudentBadges(Number.parseInt(localStorage.getItem("ID")!)).then((b) => {
+            setBadges(b);
+        });
+    };
 
     useEffect(() => {
         const id: string | null = localStorage.getItem("ID");
@@ -16,17 +28,15 @@ function Student() {
             return;
         }
 
-        getStudentBadges(Number.parseInt(id)).then((b) => {
-            if (b !== null) setBadges(b);
-        });
+        refreshBadges();
     }, []);
 
     return (
         <div className="badge-grid">
             {
-                badges.map((b) => (
-                    <BadgeNode badge={b} />
-                ))
+                badges.map((b: Badge) => (() => {
+                    return (<BadgeNode badge={b} />)
+                })())
             }
         </div>
     );

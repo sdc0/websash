@@ -31,14 +31,21 @@ function Login() {
         });
     }
 
-    /*function signUpIssuer(e: React.SubmitEvent) {
+    function signUpIssuer(e: React.SubmitEvent) {
         const name = (e.target.querySelector('input[name="name"]') as HTMLInputElement).value;
         const department = (e.target.querySelector('input[name="department"]') as HTMLInputElement).value;
         const email = (e.target.querySelector('input[name="email"]') as HTMLInputElement).value;
         const salt = generateSalt();
         
         generateHash((e.target.querySelector('input[name="password"]') as HTMLInputElement).value, salt).then((password) => {
-            let temp = new Issuer(0, name, department, email, password, salt);
+            let temp = new Issuer({
+                id: 0, 
+                name: name, 
+                department: department, 
+                email: email, 
+                password: password, 
+                salt: salt
+            });
 
             createIssuer(temp).then((ok) => {
                 if (ok) {
@@ -53,12 +60,13 @@ function Login() {
                 }
             });
         });
-    }*/
+    }
 
     function submitStudent(e: React.SubmitEvent) {
         const email = (e.target.querySelector('input[name="email"]') as HTMLInputElement).value;
 
         getSalt(email, false).then((salt) => {
+            console.log(salt);
             generateHash((e.target.querySelector('input[name="password"]') as HTMLInputElement).value, salt).then((password) => {
                 getToken(email, password, false).then((res) => {
                     if (res == null) return;
@@ -195,63 +203,31 @@ function Login() {
                         </div>
                     )
                 }
-                {/*<div>
-                    
-                </div>
-                <div>
-                    <h3>Create Issuer</h3>
-                    <form onSubmit={(e) => { e.preventDefault(); signUpIssuer(e); }}>
-                        <label>
-                            Name: 
-                            <input name="name" type="text" placeholder="Enter name here..." />
-                        </label>
-                        <label>
-                            Department: 
-                            <input name="department" type="text" placeholder="Enter department here..." />
-                        </label>
-                        <label>
-                            Email: 
-                            <input name="email" type="email" placeholder="Enter email here..." />
-                        </label>
-                        <label>
-                            Password: 
-                            <input name="password" type="password" placeholder="Enter password here..." />
-                        </label>
-                        <input type="submit" />
-                    </form>
-                </div>
-                <div>
-                    <h3>Student</h3>
-                    <form onSubmit={(e) => { e.preventDefault(); submitStudent(e); }}>
-                        <label>
-                            Email:
-                            <input name="email" type="email" placeholder="Enter email here..." />
-                        </label>
-                        <label>
-                            Password:
-                            <input name="password" type="password" placeholder="Enter password here..." />
-                        </label>
-                        <input type="submit" />
-                    </form>
-                </div>
-                <div>
-                    <h3>Create Student</h3>
-                    <form onSubmit={(e) => { e.preventDefault(); signUpStudent(e); }}>
-                        <label>
-                            Name: 
-                            <input name="name" type="text" placeholder="Enter name here..." />
-                        </label>
-                        <label>
-                            Email: 
-                            <input name="email" type="email" placeholder="Enter email here..." />
-                        </label>
-                        <label>
-                            Password: 
-                            <input name="password" type="password" placeholder="Enter password here..." />
-                        </label>
-                        <input type="submit" />
-                    </form>
-                </div>*/}
+
+                {/*
+                    <div>
+                        <h3>Create Issuer</h3>
+                        <form onSubmit={(e) => { e.preventDefault(); signUpIssuer(e); }}>
+                            <label>
+                                Name: 
+                                <input name="name" type="text" placeholder="Enter name here..." />
+                            </label>
+                            <label>
+                                Department: 
+                                <input name="department" type="text" placeholder="Enter department here..." />
+                            </label>
+                            <label>
+                                Email: 
+                                <input name="email" type="email" placeholder="Enter email here..." />
+                            </label>
+                            <label>
+                                Password: 
+                                <input name="password" type="password" placeholder="Enter password here..." />
+                            </label>
+                            <input type="submit" />
+                        </form>
+                    </div>
+                */}
             </div>
         </div>
     );

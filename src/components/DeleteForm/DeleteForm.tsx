@@ -84,7 +84,17 @@ function DeleteForm({deleter, type, refresher}: DeleteFormProps) {
                                     return (
                                         <label>
                                             {name}: 
-                                            <p>{(name === "date") ? obj[name].toLocaleDateString() : obj[name]}</p>
+                                            <p>{(name === "date") ? obj[name].toLocaleDateString() : (
+                                                (name === "badge" || name === "student" || name === "issuer") ? (() => {
+                                                    let temp = ((name === "badge") ? badges : ((name === "student") ? students : ((name === "issuer") ? issuers : []))).filter((o) => {
+                                                        if (o != null) return o.id === obj[name];
+                                                    });
+
+                                                    return (
+                                                        (temp.length > 0) ? temp[0]["name"] : obj[name]
+                                                    )
+                                                })() : obj[name]
+                                            )}</p>
                                         </label>
                                     );
                                 })

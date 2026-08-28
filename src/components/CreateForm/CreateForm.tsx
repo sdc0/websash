@@ -45,6 +45,11 @@ function CreateForm({creator, type, input_types, lists, refresher}: CreateFormPr
 
     return (
         <div>
+            {/*<button onClick={() => {
+                console.log(obj);
+            }}>
+                Debug
+            </button>*/}
             <div>
                 <form onSubmit={async (e) => {
                     e.preventDefault();
@@ -113,6 +118,20 @@ function CreateForm({creator, type, input_types, lists, refresher}: CreateFormPr
                                 </div>
                             );
                         })
+                    }
+                    {
+                        (type === "Badge") ? (
+                            <div>
+                                <label>
+                                    Set to accessible by all: 
+                                    <input type="checkbox" onChange={(e) => {
+                                        let temp = obj.clone();
+                                        temp["creator"] = (e.target.checked) ? -1 : Number.parseInt(localStorage.getItem("ID")!);
+                                        setterRef.current(temp);
+                                    }}/>
+                                </label>
+                            </div>
+                        ) : <></>
                     }
                     <input type="submit" value={`Create ${type}`} />
                 </form>

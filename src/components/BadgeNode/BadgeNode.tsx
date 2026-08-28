@@ -7,8 +7,8 @@ import "./BadgeNode.css";
 
 interface BadgeNodeProps {
     badge: Badge;
-    full: boolean;
-    clickable: boolean;
+    full?: boolean;
+    clickable?: boolean;
 }
 
 function BadgeNode({badge, full=false, clickable=true}: BadgeNodeProps) {

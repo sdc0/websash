@@ -1,9 +1,9 @@
 import { Badge, Student, Issuer, Issuance } from "./models";
 
-const api = "https://websash.dpdns.org";
+//const api = "https://websash.dpdns.org";
+const api = "http://127.0.0.1:8080";
 
 export async function getToken(email: string, password: string, issuer: boolean=true): Promise<Record<string, string> | null> {
-
     let res: Record<string, string> = await (await fetch(`${api}/login/${issuer ? "issuer" : "student"}`, {
         method: "POST",
         headers: {
@@ -37,6 +37,9 @@ export async function getSalt(email: string, isIssuer: boolean): Promise<string>
 
 export async function getBadges(): Promise<Badge[] | null> {
     let temp: Record<string, string>[] = await (await fetch(`${api}/badge`)).json();
+
+    console.log(temp);
+
     return temp;
 }
 
