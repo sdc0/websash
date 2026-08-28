@@ -47,7 +47,7 @@ export async function getBadges(): Promise<Badge[] | null> {
 }
 
 export async function getBadgesForIssuer(): Promise<Badge[] | null> {
-    let temp: Record<string, string>[] = await (await fetch(`${api}/badge`), {
+    let temp: Record<string, string>[] = await (await fetch(`${api}/badge/issuer`), {
         method: "POST",
         headers: {
             "content-type": "application/json"
@@ -178,8 +178,10 @@ export async function createBadge(badge: Badge): Promise<boolean> {
             "abbr": badge.abbr,
             "image": badge.image,
             "desc": badge.desc,
+            "short": badge.short,
             "req": badge.req,
-            "type": badge.type
+            "type": badge.type,
+            "creator": badge.creator
         })
     }).then((t) => t.ok);
 }
@@ -249,8 +251,10 @@ export async function updateBadge(badge: Badge): Promise<boolean> {
             "abbr": badge.abbr,
             "image": badge.image,
             "desc": badge.desc,
+            "short": badge.short,
             "req": badge.req,
-            "type": badge.type
+            "type": badge.type,
+            "creator": badge.creator
         })
     }).then((t) => t.ok);
 }

@@ -47,21 +47,80 @@ function IssuerPage() {
     const refreshIssuances = () => { getIssuances().then((i) => setIssuances(i)); };*/
 
     const {
-        badges, setBadges, refreshBadges,
-        issuers, setIssuers, refreshIssuers,
-        students, setStudents, refreshStudents,
-        issuances, setIssuances, refreshIssuances
+        badges, setBadges, /*refreshBadges, setRefreshBadges,*/
+        issuers, setIssuers, /*refreshIssuers, setRefreshIssuers,*/
+        students, setStudents, /*refreshStudents, setRefreshStudents,*/
+        issuances, setIssuances, /*refreshIssuances, setRefreshIssuances,*/
+        searchText, setSearchText
     } = useContext(GlobalContext);
 
+    const rBadges = () => {
+        setBadges([]);
+        console.log("new Badges refresh");
+    };
+
+    const rIssuers = () => {
+        setIssuers([]);
+        console.log("new Issuers refresh");
+    };
+
+    const rStudents = () => {
+        setStudents([]);
+        console.log("new Students refresh");
+    };
+
+    const rIssuances = () => {
+        setIssuances([]);
+        console.log("new Issuances refresh");
+    };
+
     useEffect(() => {
-        refreshBadges();
-        refreshIssuers();
-        refreshStudents();
-        refreshIssuances();
+        /*setRefreshBadges({
+            fn: () => { 
+                setBadges([]); 
+                console.log("Badges"); 
+            }
+        });
+        setRefreshIssuers({
+            fn: () => { 
+                setIssuers([]); 
+                console.log("Issuers");
+            } 
+        });
+        setRefreshStudents({
+            fn: () => { 
+                setStudents([]); 
+                console.log("Students");
+            }
+        });
+        setRefreshIssuances({
+            fn: () => { 
+                setIssuances([]); 
+                console.log("Issuances"); 
+            }
+        });*/
+
+        rBadges();
+        rIssuers();
+        rStudents();
+        rIssuances();
     }, []);
+
+    //useEffect(() => { console.log("in effect badge"); refreshBadges.fn(); }, [refreshBadges]);
+    //useEffect(() => { console.log("in effect issuer"); refreshIssuers.fn(); }, [refreshIssuers]);
+    //useEffect(() => { console.log("in effect student"); refreshStudents.fn(); }, [refreshStudents]);
+    //useEffect(() => { console.log("in effect issuance"); refreshIssuances.fn(); }, [refreshIssuances]);
 
     return (
         <div className="admin-page">
+            <button onClick={(e) => {
+                e.preventDefault();
+
+                console.log(badges);
+                console.log(issuers);
+                console.log(students);
+                console.log(issuances);
+            }}>Debug</button>
             <div className="admin-container">
                 <h3 className="heading full-heading">Add New</h3>
                 <div className="form-container">
@@ -73,7 +132,7 @@ function IssuerPage() {
                             input_types={Badge.input_types} 
                             refresher={() => {
                                 console.log("refreshing create badge");
-                                refreshBadges();
+                                //refreshBadges.fn();
                             }} 
                         />
                     </div>
@@ -85,7 +144,7 @@ function IssuerPage() {
                             input_types={Issuer.input_types} 
                             refresher={() => {
                                 console.log("refreshing create issuer");
-                                refreshIssuers();
+                                //refreshIssuers.fn();
                             }} 
                         />
                     </div>
@@ -97,7 +156,7 @@ function IssuerPage() {
                             input_types={Student.input_types} 
                             refresher={() => {
                                 console.log("refreshing create student");
-                                refreshStudents();
+                                //refreshStudents.fn();
                             }} 
                         />
                     </div>
@@ -115,10 +174,10 @@ function IssuerPage() {
                             refresher={() => {
                                 console.log("refreshing create issuance");
                                 
-                                refreshBadges();
-                                refreshIssuers();
-                                refreshStudents();
-                                refreshIssuances();
+                                /*refreshBadges.fn();
+                                refreshIssuers.fn();
+                                refreshStudents.fn();
+                                refreshIssuances.fn();*/
                             }} 
                         />
                     </div>
@@ -135,7 +194,7 @@ function IssuerPage() {
                             input_types={Badge.input_types} 
                             refresher={() => {
                                 console.log("refreshing edit badge");
-                                refreshBadges();
+                                //refreshBadges.fn();
                             }} 
                         />
                     </div>
@@ -147,7 +206,7 @@ function IssuerPage() {
                             input_types={Issuer.input_types} 
                             refresher={() => {
                                 console.log("refreshing edit issuer");
-                                refreshIssuers();
+                                //refreshIssuers.fn();
                             }} 
                         />
                     </div>
@@ -159,7 +218,7 @@ function IssuerPage() {
                             input_types={Student.input_types} 
                             refresher={() => {
                                 console.log("refreshing edit student");
-                                refreshStudents();
+                                //refreshStudents.fn();
                             }} 
                         />
                     </div>
@@ -171,7 +230,7 @@ function IssuerPage() {
                             input_types={Issuance.input_types} 
                             refresher={() => {
                                 console.log("refreshing edit issuance");
-                                refreshIssuances();
+                                //refreshIssuances.fn();
                             }} 
                         />
                     </div>
@@ -187,7 +246,7 @@ function IssuerPage() {
                             type={"Badge"} 
                             refresher={() => {
                                 console.log("refreshing delete badge");
-                                refreshBadges();
+                                //refreshBadges.fn();
                             }} 
                         />
                     </div>
@@ -198,7 +257,7 @@ function IssuerPage() {
                             type={"Issuer"} 
                             refresher={() => {
                                 console.log("refreshing delete issuer");
-                                refreshIssuers();
+                                //refreshIssuers.fn();
                             }} 
                         />
                     </div>
@@ -209,7 +268,7 @@ function IssuerPage() {
                             type={"Student"} 
                             refresher={() => {
                                 console.log("refreshing delete student");
-                                refreshStudents();
+                                //refreshStudents.fn();
                             }} 
                         />
                     </div>
@@ -220,7 +279,7 @@ function IssuerPage() {
                             type={"Issuance"} 
                             refresher={() => {
                                 console.log("refreshing delete issuance");
-                                refreshIssuances();
+                                //refreshIssuances.fn();
                             }} 
                         />
                     </div>

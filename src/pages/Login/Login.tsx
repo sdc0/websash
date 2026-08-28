@@ -23,7 +23,7 @@ function Login() {
                     if (res == null) return;
 
                     localStorage.setItem("token", JSON.stringify(res["token"]));
-                    localStorage.setItem("ID", JSON.stringify(res["id"]));
+                    localStorage.setItem("ID", res["id"]["id"]);
                     localStorage.setItem("token_type", "issuer");
                     nav("/issuer");
                 });

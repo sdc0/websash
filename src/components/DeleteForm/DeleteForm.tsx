@@ -19,7 +19,7 @@ interface DeleteFormProps {
 
 function DeleteForm({deleter, type, refresher}: DeleteFormProps) {
     const [obj, setObj] = useState<Badge | Issuer | Student | Issuance>(
-        (type === "Badge") ? new Badge() : (
+        (type === "Badge") ? new Badge({}) : (
         (type === "Issuer") ? new Issuer() : (
         (type === "Student") ? new Student() : 
         new Issuance()

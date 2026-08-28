@@ -5,7 +5,9 @@ export class Badge {
     public type: string;
     public image: string;
     public desc: string;
+    public short: string;
     public req: string;
+    public creator: number;
 
     static input_types: Record<string, string> = {
         "name": "text",
@@ -13,31 +15,37 @@ export class Badge {
         "type": "text",
         "image": "file",
         "desc": "text",
+        "short": "text",
         "req": "text"
     };
 
-    constructor();
-    constructor(id: number, name: string, abbr: string, type: string, image: string, desc: string, req: string);
-    constructor(id?: number, name?: string, abbr?: string, type?: string, image?: string, desc?: string, req?: string) {
-        this.id = id ?? -1;
-        this.name = name ?? "";
-        this.abbr = abbr ?? "";
-        this.type = type ?? "";
-        this.image = image ?? "";
-        this.desc = desc ?? "";
-        this.req = req ?? "";
+    /*constructor();
+    constructor(creator: number);
+    constructor(id: number, name: string, abbr: string, type: string, image: string, desc: string, short: string, req: string, creator: number);*/
+    constructor(options: {id?: number, name?: string, abbr?: string, type?: string, image?: string, desc?: string, short?: string, req?: string, creator?: number}) {
+        this.id = options.id ?? -1;
+        this.name = options.name ?? "";
+        this.abbr = options.abbr ?? "";
+        this.type = options.type ?? "";
+        this.image = options.image ?? "";
+        this.desc = options.desc ?? "";
+        this.short = options.short ?? "";
+        this.req = options.req ?? "";
+        this.creator = options.creator ?? -1;
     }
 
     clone(): Badge {
-        return new Badge(
-            this.id,
-            this.name,
-            this.abbr,
-            this.type,
-            this.image,
-            this.desc,
-            this.req
-        );
+        return new Badge({
+            id: this.id,
+            name: this.name,
+            abbr: this.abbr,
+            type: this.type,
+            image: this.image,
+            desc: this.desc,
+            short: this.short,
+            req: this.req,
+            creator: this.creator
+        });
     }
 
     static from_json(badge_obj: Record<string, string>): Badge {
@@ -48,7 +56,9 @@ export class Badge {
             ("badge_type" in badge_obj) ? badge_obj["badge_type"] : badge_obj["type"], 
             ("badge_image" in badge_obj) ? badge_obj["badge_image"] : badge_obj["image"], 
             ("badge_desc" in badge_obj) ? badge_obj["badge_desc"] : badge_obj["desc"], 
-            ("badge_req" in badge_obj) ? badge_obj["badge_req"] : badge_obj["req"]
+            ("badge_short" in badge_obj) ? badge_obj["badge_short"] : badge_obj["short"], 
+            ("badge_req" in badge_obj) ? badge_obj["badge_req"] : badge_obj["req"],
+            ("badge_creator" in badge_obj) ? badge_obj["badge_creator"] : badge_obj["creator"]
         );
 
         return t;
