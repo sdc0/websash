@@ -49,17 +49,17 @@ export class Badge {
     }
 
     static from_json(badge_obj: Record<string, string>): Badge {
-        let t = new Badge(
-            ("badge_id" in badge_obj) ? Number(badge_obj["badge_id"]) : Number(badge_obj["id"]), 
-            ("badge_name" in badge_obj) ? badge_obj["badge_name"] : badge_obj["name"], 
-            ("badge_abbr" in badge_obj) ? badge_obj["badge_abbr"] : badge_obj["abbr"], 
-            ("badge_type" in badge_obj) ? badge_obj["badge_type"] : badge_obj["type"], 
-            ("badge_image" in badge_obj) ? badge_obj["badge_image"] : badge_obj["image"], 
-            ("badge_desc" in badge_obj) ? badge_obj["badge_desc"] : badge_obj["desc"], 
-            ("badge_short" in badge_obj) ? badge_obj["badge_short"] : badge_obj["short"], 
-            ("badge_req" in badge_obj) ? badge_obj["badge_req"] : badge_obj["req"],
-            ("badge_creator" in badge_obj) ? badge_obj["badge_creator"] : badge_obj["creator"]
-        );
+        let t = new Badge({
+            id: ("badge_id" in badge_obj) ? Number(badge_obj["badge_id"]) : Number(badge_obj["id"]), 
+            name: ("badge_name" in badge_obj) ? badge_obj["badge_name"] : badge_obj["name"], 
+            abbr: ("badge_abbr" in badge_obj) ? badge_obj["badge_abbr"] : badge_obj["abbr"], 
+            type: ("badge_type" in badge_obj) ? badge_obj["badge_type"] : badge_obj["type"], 
+            image: ("badge_image" in badge_obj) ? badge_obj["badge_image"] : badge_obj["image"], 
+            desc: ("badge_desc" in badge_obj) ? badge_obj["badge_desc"] : badge_obj["desc"], 
+            short: ("badge_short" in badge_obj) ? badge_obj["badge_short"] : badge_obj["short"], 
+            req: ("badge_req" in badge_obj) ? badge_obj["badge_req"] : badge_obj["req"],
+            creator: ("badge_creator" in badge_obj) ? badge_obj["badge_creator"] : badge_obj["creator"]
+        });
 
         return t;
     }

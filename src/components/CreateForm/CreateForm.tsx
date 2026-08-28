@@ -69,7 +69,7 @@ function CreateForm({creator, type, input_types, lists, refresher}: CreateFormPr
                         if (refresher != null) refresher();
 
                         // clear form
-                        if (type === "Badge") setterRef.current(new Badge());
+                        if (type === "Badge") setterRef.current(new Badge({}));
                         else if (type === "Issuer") setterRef.current(new Issuer());
                         else if (type === "Student") setterRef.current(new Student());
                         else if (type === "Issuance") setterRef.current(new Issuance());

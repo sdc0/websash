@@ -1,7 +1,12 @@
 import { useState, useEffect, useContext } from "react"
 
 import { Badge, Issuance, Issuer, Student } from "../../lib/models";
-import { getBadges, getStudents, getIssuers, getIssuances, createBadge, createStudent, createIssuer, createIssuance, updateBadge, updateStudent, updateIssuer, updateIssuance, deleteBadge, deleteStudent, deleteIssuer, deleteIssuance } from "../../lib/api";
+import { 
+    getBadges, getStudents, getIssuers, getIssuances, getBadgesForIssuer,
+    createBadge, createStudent, createIssuer, createIssuance, 
+    updateBadge, updateStudent, updateIssuer, updateIssuance, 
+    deleteBadge, deleteStudent, deleteIssuer, deleteIssuance 
+} from "../../lib/api";
 
 import ObjectSelector from "../../components/ObjectSelector/ObjectSelector";
 import BadgeNode from "../../components/BadgeNode/BadgeNode";
@@ -55,22 +60,25 @@ function IssuerPage() {
     } = useContext(GlobalContext);
 
     const rBadges = () => {
-        setBadges([]);
+        getBadgesForIssuer().then((b) => {
+            console.log(b);
+            setBadges(b);
+        });
         console.log("new Badges refresh");
     };
 
     const rIssuers = () => {
-        setIssuers([]);
+        getIssuers().then((i) => setIssuers(i));
         console.log("new Issuers refresh");
     };
 
     const rStudents = () => {
-        setStudents([]);
+        getStudents().then((s) => setStudents(s));
         console.log("new Students refresh");
     };
 
     const rIssuances = () => {
-        setIssuances([]);
+        getIssuances().then((i) => setIssuances(i));
         console.log("new Issuances refresh");
     };
 
@@ -104,6 +112,7 @@ function IssuerPage() {
         rIssuers();
         rStudents();
         rIssuances();
+        console.log(getBadgesForIssuer());
     }, []);
 
     //useEffect(() => { console.log("in effect badge"); refreshBadges.fn(); }, [refreshBadges]);
