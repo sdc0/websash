@@ -19,117 +19,42 @@ import { GlobalContext } from "../../components/GlobalContext/GlobalContext";
 import "./Issuer.css";
 
 function IssuerPage() {
-    /*const [badges, setBadges] = useState<Badge[]>([]);
-    const [issuers, setIssuers] = useState<Issuer[]>([]);
-    const [students, setStudents] = useState<Student[]>([]);
-    const [issuances, setIssuances] = useState<Issuance[]>([]);
-
-
-    const [addBadge, setAddBadge] = useState<Badge>(new Badge());
-    const [addIssuer, setAddIssuer] = useState<Issuer>(new Issuer());
-    const [addStudent, setAddStudent] = useState<Student>(new Student());
-    const [addIssuance, setAddIssuance] = useState<Issuance>(new Issuance());
-
-
-    const [editBadge, setEditBadge] = useState<Badge>(new Badge());
-    const [editIssuer, setEditIssuer] = useState<Issuer>(new Issuer());
-    const [editStudent, setEditStudent] = useState<Student>(new Student());
-    const [editIssuance, setEditIssuance] = useState<Issuance>(new Issuance());
-
-    const [issuerPasswordChanged, setIssuerPasswordChanged] = useState<boolean>(false);
-    const [studentPasswordChanged, setStudentPasswordChanged] = useState<boolean>(false);
-    
-
-    const [delBadge, setDelBadge] = useState<Badge>(new Badge());
-    const [delIssuer, setDelIssuer] = useState<Issuer>(new Issuer());
-    const [delStudent, setDelStudent] = useState<Student>(new Student());
-    const [delIssuance, setDelIssuance] = useState<Issuance>(new Issuance());
-
-
-    const refreshBadges = () => { getBadges().then((b) => setBadges(b)); };
-    const refreshIssuers = () => { getIssuers().then((i) => setIssuers(i)); };
-    const refreshStudents = () => { getStudents().then((s) => setStudents(s)); };
-    const refreshIssuances = () => { getIssuances().then((i) => setIssuances(i)); };*/
-
     const {
-        badges, setBadges, /*refreshBadges, setRefreshBadges,*/
-        issuers, setIssuers, /*refreshIssuers, setRefreshIssuers,*/
-        students, setStudents, /*refreshStudents, setRefreshStudents,*/
-        issuances, setIssuances, /*refreshIssuances, setRefreshIssuances,*/
+        badges, setBadges, 
+        issuers, setIssuers, 
+        students, setStudents, 
+        issuances, setIssuances, 
         searchText, setSearchText
     } = useContext(GlobalContext);
 
-    const rBadges = () => {
+    const refreshBadges = () => {
         getBadgesForIssuer().then((b) => {
             console.log(b);
             setBadges(b);
         });
-        console.log("new Badges refresh");
     };
 
-    const rIssuers = () => {
+    const refreshIssuers = () => {
         getIssuers().then((i) => setIssuers(i));
-        console.log("new Issuers refresh");
     };
 
-    const rStudents = () => {
+    const refreshStudents = () => {
         getStudents().then((s) => setStudents(s));
-        console.log("new Students refresh");
     };
 
-    const rIssuances = () => {
+    const refreshIssuances = () => {
         getIssuances().then((i) => setIssuances(i));
-        console.log("new Issuances refresh");
     };
 
     useEffect(() => {
-        /*setRefreshBadges({
-            fn: () => { 
-                setBadges([]); 
-                console.log("Badges"); 
-            }
-        });
-        setRefreshIssuers({
-            fn: () => { 
-                setIssuers([]); 
-                console.log("Issuers");
-            } 
-        });
-        setRefreshStudents({
-            fn: () => { 
-                setStudents([]); 
-                console.log("Students");
-            }
-        });
-        setRefreshIssuances({
-            fn: () => { 
-                setIssuances([]); 
-                console.log("Issuances"); 
-            }
-        });*/
-
-        rBadges();
-        rIssuers();
-        rStudents();
-        rIssuances();
-        console.log(getBadgesForIssuer());
+        refreshBadges();
+        refreshIssuers();
+        refreshStudents();
+        refreshIssuances();
     }, []);
-
-    //useEffect(() => { console.log("in effect badge"); refreshBadges.fn(); }, [refreshBadges]);
-    //useEffect(() => { console.log("in effect issuer"); refreshIssuers.fn(); }, [refreshIssuers]);
-    //useEffect(() => { console.log("in effect student"); refreshStudents.fn(); }, [refreshStudents]);
-    //useEffect(() => { console.log("in effect issuance"); refreshIssuances.fn(); }, [refreshIssuances]);
 
     return (
         <div className="admin-page">
-            <button onClick={(e) => {
-                e.preventDefault();
-
-                console.log(badges);
-                console.log(issuers);
-                console.log(students);
-                console.log(issuances);
-            }}>Debug</button>
             <div className="admin-container">
                 <h3 className="heading full-heading">Add New</h3>
                 <div className="form-container">
@@ -140,8 +65,7 @@ function IssuerPage() {
                             type={"Badge"} 
                             input_types={Badge.input_types} 
                             refresher={() => {
-                                console.log("refreshing create badge");
-                                //refreshBadges.fn();
+                                refreshBadges();
                             }} 
                         />
                     </div>
@@ -152,8 +76,7 @@ function IssuerPage() {
                             type={"Issuer"} 
                             input_types={Issuer.input_types} 
                             refresher={() => {
-                                console.log("refreshing create issuer");
-                                //refreshIssuers.fn();
+                                refreshIssuers();
                             }} 
                         />
                     </div>
@@ -164,8 +87,7 @@ function IssuerPage() {
                             type={"Student"} 
                             input_types={Student.input_types} 
                             refresher={() => {
-                                console.log("refreshing create student");
-                                //refreshStudents.fn();
+                                refreshStudents();
                             }} 
                         />
                     </div>
@@ -181,12 +103,10 @@ function IssuerPage() {
                                 "Student": students
                             }} 
                             refresher={() => {
-                                console.log("refreshing create issuance");
-                                
-                                /*refreshBadges.fn();
-                                refreshIssuers.fn();
-                                refreshStudents.fn();
-                                refreshIssuances.fn();*/
+                                refreshBadges();
+                                refreshIssuers();
+                                refreshStudents();
+                                refreshIssuances();
                             }} 
                         />
                     </div>
@@ -202,8 +122,7 @@ function IssuerPage() {
                             type={"Badge"} 
                             input_types={Badge.input_types} 
                             refresher={() => {
-                                console.log("refreshing edit badge");
-                                //refreshBadges.fn();
+                                refreshBadges();
                             }} 
                         />
                     </div>
@@ -214,8 +133,7 @@ function IssuerPage() {
                             type={"Issuer"} 
                             input_types={Issuer.input_types} 
                             refresher={() => {
-                                console.log("refreshing edit issuer");
-                                //refreshIssuers.fn();
+                                refreshIssuers();
                             }} 
                         />
                     </div>
@@ -226,8 +144,7 @@ function IssuerPage() {
                             type={"Student"} 
                             input_types={Student.input_types} 
                             refresher={() => {
-                                console.log("refreshing edit student");
-                                //refreshStudents.fn();
+                                refreshStudents();
                             }} 
                         />
                     </div>
@@ -238,8 +155,7 @@ function IssuerPage() {
                             type={"Issuance"} 
                             input_types={Issuance.input_types} 
                             refresher={() => {
-                                console.log("refreshing edit issuance");
-                                //refreshIssuances.fn();
+                                refreshIssuances();
                             }} 
                         />
                     </div>
@@ -254,8 +170,7 @@ function IssuerPage() {
                             deleter={(obj) => deleteBadge(obj)} 
                             type={"Badge"} 
                             refresher={() => {
-                                console.log("refreshing delete badge");
-                                //refreshBadges.fn();
+                                refreshBadges();
                             }} 
                         />
                     </div>
@@ -265,8 +180,7 @@ function IssuerPage() {
                             deleter={(obj) => deleteIssuer(obj)} 
                             type={"Issuer"} 
                             refresher={() => {
-                                console.log("refreshing delete issuer");
-                                //refreshIssuers.fn();
+                                refreshIssuers();
                             }} 
                         />
                     </div>
@@ -276,8 +190,7 @@ function IssuerPage() {
                             deleter={(obj) => deleteStudent(obj)} 
                             type={"Student"} 
                             refresher={() => {
-                                console.log("refreshing delete student");
-                                //refreshStudents.fn();
+                                refreshStudents();
                             }} 
                         />
                     </div>
@@ -287,8 +200,7 @@ function IssuerPage() {
                             deleter={(obj) => deleteIssuance(obj)} 
                             type={"Issuance"} 
                             refresher={() => {
-                                console.log("refreshing delete issuance");
-                                //refreshIssuances.fn();
+                                refreshIssuances();
                             }} 
                         />
                     </div>

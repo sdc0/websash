@@ -13,10 +13,10 @@ function Header() {
     const nav = useNavigate();
 
     const {
-        badges, setBadges, refreshBadges,
-        issuers, setIssuers, refreshIssuers,
-        students, setStudents, refreshStudents,
-        issuances, setIssuances, refreshIssuances,
+        badges, setBadges, 
+        issuers, setIssuers, 
+        students, setStudents, 
+        issuances, setIssuances, 
         searchText, setSearchText
     } = useContext(GlobalContext);
 

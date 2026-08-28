@@ -11,10 +11,10 @@ import "./Home.css";
 
 function Home() {
     const {
-        badges, setBadges, /*refreshBadges, setRefreshBadges,*/
-        issuers, setIssuers, /*refreshIssuers, setRefreshIssuers,*/
-        students, setStudents, /*refreshStudents, setRefreshStudents,*/
-        issuances, setIssuances, /*refreshIssuances, setRefreshIssuances,*/
+        badges, setBadges, 
+        issuers, setIssuers, 
+        students, setStudents, 
+        issuances, setIssuances, 
         searchText, setSearchText
     } = useContext(GlobalContext);
     
@@ -28,23 +28,12 @@ function Home() {
     }, [badges, searchText]);
 
     const rBadges = () => {
-        console.log("in new refresh badges for home page");
         getBadges().then((b) => setBadges(b));
     };
 
     useEffect(() => {
-        /*setRefreshBadges({
-            fn: () => {
-                console.log("in refresh badges from home page");
-                getBadges().then((b) => setBadges(b));
-            }
-        });*/
         rBadges();
     }, []);
-
-    /*useEffect(() => {
-        refreshBadges.fn();
-    }, [refreshBadges]);*/
 
     return (
         <div className="badge-grid">

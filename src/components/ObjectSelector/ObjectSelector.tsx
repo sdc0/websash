@@ -8,21 +8,16 @@ interface ObjectSelectorProps {
 }
 
 function ObjectSelector({obj, setter, type, list}: ObjectSelectorProps) {
-    /*const setterRef = useRef(setter);
 
     useEffect(() => {
-        setterRef.current = setter;
-    }, [setter]);*/
-
-    useEffect(() => {
-        if (list != null && list.length > 0) /*setterRef.current*/setter(list[0]);
+        if (list != null && list.length > 0) setter(list[0]);
     }, [list]);
 
     return (
         <div>
             <select onChange={async (e) => {
                 e.preventDefault();
-                await /*setterRef.current*/setter(list[e.target.value]);
+                await setter(list[e.target.value]);
             }}>
                 {
                     (list != null) ? list.map((o: Badge | Issuer | Student | Issuance, i: number) => {

@@ -23,9 +23,9 @@ interface CreateFormProps {
 function CreateForm({creator, type, input_types, lists, refresher}: CreateFormProps) {
     const [obj, setObj] = useState<Badge | Issuer | Student | Issuance>(
         (type === "Badge") ? new Badge({creator: parseInt(localStorage.getItem("ID"), 10)}) : (
-        (type === "Issuer") ? new Issuer() : (
-        (type === "Student") ? new Student() : 
-        new Issuance()
+        (type === "Issuer") ? new Issuer({}) : (
+        (type === "Student") ? new Student({}) : 
+        new Issuance({})
     )));
 
     const [showDialog, setShowDialog] = useState<boolean>(false);
@@ -45,7 +45,6 @@ function CreateForm({creator, type, input_types, lists, refresher}: CreateFormPr
 
     return (
         <div>
-            <button onClick={(e) => {e.preventDefault(); console.log(obj);}}>Debug</button>
             <div>
                 <form onSubmit={async (e) => {
                     e.preventDefault();
@@ -70,9 +69,9 @@ function CreateForm({creator, type, input_types, lists, refresher}: CreateFormPr
 
                         // clear form
                         if (type === "Badge") setterRef.current(new Badge({}));
-                        else if (type === "Issuer") setterRef.current(new Issuer());
-                        else if (type === "Student") setterRef.current(new Student());
-                        else if (type === "Issuance") setterRef.current(new Issuance());
+                        else if (type === "Issuer") setterRef.current(new Issuer({}));
+                        else if (type === "Student") setterRef.current(new Student({}));
+                        else if (type === "Issuance") setterRef.current(new Issuance({}));
 
                         e.target.reset();
                     }

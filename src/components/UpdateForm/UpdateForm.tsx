@@ -22,9 +22,9 @@ interface UpdateFormProps {
 function UpdateForm({updater, type, input_types, list, refresher}: UpdateFormProps) {
     const [obj, setObj] = useState<Badge | Issuer | Student | Issuance>(
         (type === "Badge") ? new Badge({}) : (
-        (type === "Issuer") ? new Issuer() : (
-        (type === "Student") ? new Student() : 
-        new Issuance()
+        (type === "Issuer") ? new Issuer({}) : (
+        (type === "Student") ? new Student({}) : 
+        new Issuance({})
     )));
     const [passwordChanged, setPasswordChanged] = useState<boolean>(false);
 
@@ -44,10 +44,10 @@ function UpdateForm({updater, type, input_types, list, refresher}: UpdateFormPro
     }, []);
 
     const {
-        badges, setBadges, refreshBadges, setRefreshBadges,
-        issuers, setIssuers, refreshIssuers, setRefreshIssuers,
-        students, setStudents, refreshStudents, setRefreshStudents,
-        issuances, setIssuances, refreshIssuances, setRefreshIssuances,
+        badges, setBadges,
+        issuers, setIssuers, 
+        students, setStudents, 
+        issuances, setIssuances, 
         searchText, setSearchText
     } = useContext(GlobalContext);
     

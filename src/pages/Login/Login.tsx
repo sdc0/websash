@@ -78,7 +78,13 @@ function Login() {
         const salt = generateSalt();
         
         generateHash((e.target.querySelector('input[name="password"]') as HTMLInputElement).value, salt).then((password) => {
-            let temp = new Student(0, name, email, password, salt);
+            let temp = new Student({
+                id: 0, 
+                name: name, 
+                email: email, 
+                password: password, 
+                salt: salt
+            });
 
             createStudent(temp).then((ok) => {
                 if (ok) {
