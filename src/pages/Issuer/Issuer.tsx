@@ -29,7 +29,6 @@ function IssuerPage() {
 
     const refreshBadges = () => {
         getBadgesForIssuer().then((b) => {
-            console.log(b);
             setBadges(b);
         });
     };

@@ -73,7 +73,7 @@ function CreateForm({creator, type, input_types, lists, refresher}: CreateFormPr
                         if (refresher != null) refresher();
 
                         // clear form
-                        if (type === "Badge") setterRef.current(new Badge({}));
+                        if (type === "Badge") setterRef.current(new Badge({creator: parseInt(localStorage.getItem("ID"), 10)}));
                         else if (type === "Issuer") setterRef.current(new Issuer({}));
                         else if (type === "Student") setterRef.current(new Student({}));
                         else if (type === "Issuance") setterRef.current(new Issuance({}));
@@ -88,31 +88,31 @@ function CreateForm({creator, type, input_types, lists, refresher}: CreateFormPr
                                     <label>
                                         {field}:
                                         <CustomInput type={t} obj={obj} setter={(t === "Badge" || t === "Issuer" || t === "Student" || t === "Issuance") ? (o) => {
-                                            let temp = obj.clone();
-                                            
-                                            temp[field] = o.id;
+                                            setObj((prev) => {
+                                                const temp = prev.clone();
+                                                temp[field] = o.id;
+                                                return temp;
+                                            });
+                                        } : (target) => {
+                                            setObj((prev) => {
+                                                const temp = prev.clone();
 
-                                            setterRef.current(temp);
-                                        } : async (target) => {
-                                            let temp = obj.clone();
-                                            
-                                            if (t === "file") {
-                                                const file = target.files?.[0];
-                                                if (file) {
-                                                    await fileToBase64(file).then((base64) => {
-                                                        //eval(`temp.${field} = "${base64}"`);
-                                                        temp[field] = base64;
-                                                    });
+                                                if (t === "file") {
+                                                    const file = target.files?.[0];
+                                                    if (file) {
+                                                        return fileToBase64(file).then((base64) => {
+                                                            temp[field] = base64;
+                                                            return temp;
+                                                        });
+                                                    }
+                                                }else if (t === "number") {
+                                                    temp[field] = target.value;
+                                                }else {
+                                                    temp[field] = target.value;
                                                 }
-                                            }else if (t === "number") {
-                                                //eval(`temp.${field} = ${target.value}`);
-                                                temp[field] = target.value;
-                                            }else {
-                                                //eval(`temp.${field} = "${target.value}"`);
-                                                temp[field] = target.value;
-                                            }
-                                            
-                                            setterRef.current(temp);
+
+                                                return temp;
+                                            });
                                         }} list={(t === "Badge" || t === "Issuer" || t === "Student") ? lists[t] : []} />
                                     </label>
                                 </div>
@@ -126,7 +126,7 @@ function CreateForm({creator, type, input_types, lists, refresher}: CreateFormPr
                                     Set to accessible by all: 
                                     <input type="checkbox" onChange={(e) => {
                                         let temp = obj.clone();
-                                        temp["creator"] = (e.target.checked) ? -1 : Number.parseInt(localStorage.getItem("ID")!);
+                                        temp["creator"] = (e.target.checked) ? -1 : parseInt(localStorage.getItem("ID")!);
                                         setterRef.current(temp);
                                     }}/>
                                 </label>

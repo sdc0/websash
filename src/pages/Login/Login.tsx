@@ -48,16 +48,7 @@ function Login() {
             });
 
             createIssuer(temp).then((ok) => {
-                if (ok) {
-                    getToken(email, password).then((res) => {
-                        if (res == null) return;
-
-                        localStorage.setItem("token", JSON.stringify(res['token']));
-                        localStorage.setItem("ID", JSON.stringify(res['id']));
-                        localStorage.setItem("token_type", "issuer");
-                        nav("/issuer");
-                    });
-                }
+                if (ok) console.log("Created a new issuer");
             });
         });
     }

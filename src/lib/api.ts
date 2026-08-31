@@ -38,8 +38,6 @@ export async function getSalt(email: string, isIssuer: boolean): Promise<string>
 export async function getBadges(): Promise<Badge[] | null> {
     let temp: Record<string, string>[] = await (await fetch(`${api}/badge`)).json();
 
-    console.log(temp);
-
     return temp;
 }
 
@@ -54,7 +52,6 @@ export async function getBadgesForIssuer(): Promise<Badge[] | null> {
             "token_type": localStorage.getItem("token_type") as string
         })
     })).json();
-    console.log(temp);
     let badges: Badge[] = [];
 
     for (let i = 0; i < temp.length; i++) {

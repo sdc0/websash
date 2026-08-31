@@ -26,7 +26,7 @@ function CustomInput({type, obj, setter, defaultValue, editable=true, field, lis
         <div>
             {
                 (type === "Badge" || type === "Student" || type === "Issuer" || type === "Issuance") ? (
-                    (editable) ? <ObjectSelector obj={obj} setter={setter} type={type} list={list} /> : (() => {
+                    (editable) ? <ObjectSelector obj={obj} field={field} setter={setter} type={type} list={list} /> : (() => {
                         let temp = ((field === "badge") ? badges : ((field === "student") ? students : ((field === "issuer") ? issuers : []))).filter((o) => {
                             if (o != null) return o.id === obj[field];
                         });
