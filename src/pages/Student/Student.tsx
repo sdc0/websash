@@ -14,6 +14,8 @@ function Student() {
         issuances, setIssuances, 
         searchText, setSearchText
     } = useContext(GlobalContext);
+    
+    const [filtered, setFiltered] = useState<Badge[]>(badges);
 
     const refreshBadges = () => {
         getStudentBadges(Number.parseInt(localStorage.getItem("ID")!)).then((b) => {
@@ -30,11 +32,18 @@ function Student() {
 
         refreshBadges();
     }, []);
+    
+    useEffect(() => {
+        setFiltered(badges.filter((b) => {
+            if (searchText === "") return b;
+            else return b.name.toLowerCase().includes(searchText);
+        }));
+    }, [badges, searchText]);
 
     return (
         <div className="badge-grid">
             {
-                badges.map((b: Badge) => (() => {
+                filtered.map((b: Badge) => (() => {
                     return (<BadgeNode badge={b} />)
                 })())
             }

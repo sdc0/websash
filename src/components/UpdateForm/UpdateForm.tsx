@@ -92,33 +92,33 @@ function UpdateForm({updater, type, input_types, list, refresher}: UpdateFormPro
                                     <label>
                                         {field}: 
                                         <CustomInput type={t} obj={obj} defaultValue={obj[field]} setter={(t === "Badge" || t === "Issuer" || t === "Student" || t === "Issuance") ? (o) => {
-                                            let temp = obj.clone();
+                                            setObj((prev) => {
+                                                const temp = prev.clone();
+                                                temp[field] = o.id;
+                                                return temp;
+                                            });
+                                        } : (target) => {
+                                            setObj((prev) => {
+                                                let temp = prev.clone();
 
-                                            temp[field] = o.id;
-
-                                            setterRef.current(temp);
-                                        } : async (target) => {
-                                            let temp = obj.clone();
-
-                                            if (t === "file") {
-                                                const file = target.files?.[0];
-                                                if (file) {
-                                                    await fileToBase64(file).then((base64) => {
-                                                        //eval(`temp.${field} = "${base64}"`);
-                                                        temp[field] = base64;
-                                                    });
+                                                if (t === "file") {
+                                                    const file = target.files?.[0];
+                                                    if (file) {
+                                                        return fileToBase64(file).then((base64) => {
+                                                            temp[field] = base64;
+                                                            return temp;
+                                                        });
+                                                    }
+                                                }else if (t === "number") {
+                                                    temp[field] = target.value;
+                                                }else {
+                                                    temp[field] = target.value;
                                                 }
-                                            }else if (t === "number") {
-                                                //eval(`temp.${field} = ${target.value}`);
-                                                temp[field] = target.value;
-                                            }else {
-                                                //eval(`temp.${field} = "${target.value}"`);
-                                                temp[field] = target.value;
-                                            }
 
-                                            if (field === "password") setPasswordChanged(true);
+                                                if (field === "password") setPasswordChanged(true);
 
-                                            setterRef.current(temp);
+                                                return temp;
+                                            });
                                         }} editable={t === "Issuance" && field !== "date"} field={field} list={list} />
                                     </label>
                                 </div>
