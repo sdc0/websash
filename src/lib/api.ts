@@ -1,7 +1,6 @@
 import { Badge, Student, Issuer, Issuance } from "./models";
 
-//const api = "https://websash.dpdns.org";
-const api = "http://127.0.0.1:8080";
+const api = "https://websash.dpdns.org";
 
 export async function getToken(email: string, password: string, issuer: boolean=true): Promise<Record<string, string> | null> {
     let res: Record<string, string> = await (await fetch(`${api}/login/${issuer ? "issuer" : "student"}`, {
