@@ -94,25 +94,34 @@ function CreateForm({creator, type, input_types, lists, refresher}: CreateFormPr
                                                 return temp;
                                             });
                                         } : (target) => {
-                                            setObj((prev) => {
-                                                const temp = prev.clone();
-
-                                                if (t === "file") {
+                                            if (t === "file") {
+                                                const updateTemp = async () => {
                                                     const file = target.files?.[0];
                                                     if (file) {
-                                                        return fileToBase64(file).then((base64) => {
+                                                        const base64 = await fileToBase64(file);
+
+                                                        setObj((prev) => {
+                                                            const temp = prev.clone();
                                                             temp[field] = base64;
                                                             return temp;
                                                         });
                                                     }
-                                                }else if (t === "number") {
-                                                    temp[field] = target.value;
-                                                }else {
-                                                    temp[field] = target.value;
-                                                }
+                                                };
 
-                                                return temp;
-                                            });
+                                                updateTemp();
+                                            }else {
+                                                setObj((prev) => {
+                                                    const temp = prev.clone();
+
+                                                    if (t === "number") {
+                                                        temp[field] = target.value;
+                                                    }else {
+                                                        temp[field] = target.value;
+                                                    }
+
+                                                    return temp;
+                                                });
+                                            }
                                         }} list={(t === "Badge" || t === "Issuer" || t === "Student") ? lists[t] : []} />
                                     </label>
                                 </div>
