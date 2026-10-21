@@ -308,7 +308,7 @@ def insert_badge():
 
     res = query("INSERT INTO badge (name, abbr, type, image, desc, short, req, creator) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [params["name"], params["abbr"], params["type"], f"{images_path}/{params['abbr']}.{ext}", params["desc"], params["short"], params["req"], params["creator"]])
     
-    return jsonify({"msg": f"Successfully inserted {params["name"]} into badges table"}), 200
+    return jsonify({"msg": f'Successfully inserted {params["name"]} into badges table'}), 200
 
 @app.route("/api/badge/delete", methods=['POST'])
 @token_required
@@ -329,7 +329,7 @@ def delete_badge():
     os.remove(toDelete["image"])
     res = query("DELETE FROM badge WHERE id=?", [params["id"]])
 
-    return jsonify({"msg": f"Successfully deleted badge {params["id"]} from badges table"}), 200
+    return jsonify({"msg": f'Successfully deleted badge {params["id"]} from badges table'}), 200
 
 # student CRUD operations
 @app.route("/api/student", methods=["POST"])
@@ -387,7 +387,7 @@ def insert_student():
 
     res = query("INSERT INTO student (name, email, password, salt) VALUES (?, ?, ?, ?)", [params["name"], params["email"], params["password"], params["salt"]])
 
-    return jsonify({"msg": f"Successfully inserted {params["name"]} into student table"}), 200
+    return jsonify({"msg": f'Successfully inserted {params["name"]} into student table'}), 200
 
 @app.route("/api/student/delete", methods=["POST"])
 @token_required
@@ -402,7 +402,7 @@ def delete_student():
 
     res = query("DELETE FROM student WHERE id=?", [params["id"]])
 
-    return jsonify({"msg": f"Successfully deleted {params["id"]} from student table"}), 200
+    return jsonify({"msg": f'Successfully deleted {params["id"]} from student table'}), 200
 
 @app.route("/api/student/salt", methods=["POST"])
 def get_student_salt():
@@ -468,7 +468,7 @@ def insert_issuer():
 
     res = query("INSERT INTO issuer (name, department, email, password, salt) VALUES (?, ?, ?, ?, ?)", [params["name"], params["department"], params["email"], params["password"], params["salt"]])
 
-    return jsonify({"msg": f"Successfully inserted {params["name"]} into issuer table"}), 200
+    return jsonify({"msg": f'Successfully inserted {params["name"]} into issuer table'}), 200
 
 @app.route("/api/issuer/delete", methods=["POST"])
 @token_required
@@ -483,7 +483,7 @@ def delete_issuer():
 
     res = query("DELETE FROM issuer WHERE id=?", [params["id"]])
 
-    return jsonify({"msg": f"Successfully deleted {params["id"]} from issuer table"}), 200
+    return jsonify({"msg": f'Successfully deleted {params["id"]} from issuer table'}), 200
 
 @app.route("/api/issuer/salt", methods=["POST"])
 def get_issuer_salt():
@@ -550,7 +550,7 @@ def issue_badge():
 
     res = query("INSERT INTO issuance (badge, student, issuer, date) VALUES (?, ?, ?, ?)", [params["badge"], params["student"], params["issuer"], params["date"]])
 
-    return jsonify({"msg": f"Successfully issued {params["badge"]} to {params["student"]} by {params["issuer"]} on {params["date"]}"}), 200
+    return jsonify({"msg": f'Successfully issued {params["badge"]} to {params["student"]} by {params["issuer"]} on {params["date"]}'}), 200
 
 @app.route("/api/badge/issue/update", methods=["POST"])
 @token_required
@@ -569,7 +569,7 @@ def update_issuance():
     
     res = query("UPDATE issuance SET date=? WHERE badge=? AND student=? AND issuer=?", [params["date"], params["badge"], params["student"], params["issuer"]])
 
-    return jsonify({"msg": f"Successfully updated issuance of {params["badge"]} to {params["student"]} by {params["issuer"]} to {params["date"]}"}), 200
+    return jsonify({"msg": f'Successfully updated issuance of {params["badge"]} to {params["student"]} by {params["issuer"]} to {params["date"]}'}), 200
 
 @app.route("/api/badge/issue/delete", methods=["POST"])
 @token_required
@@ -588,7 +588,7 @@ def delete_issuance():
     
     res = query("DELETE FROM issuance WHERE badge=? AND student=? AND issuer=?", [params["badge"], params["student"], params["issuer"]])
 
-    return jsonify({"msg": f"Successfully deleted issuance of {params["badge"]} to {params["student"]} by {params["issuer"]}"}), 200
+    return jsonify({"msg": f'Successfully deleted issuance of {params["badge"]} to {params["student"]} by {params["issuer"]}'}), 200
 
 # permission CRUD operations
 @app.route("/api/permission/<int:ident>", methods=["GET"])
@@ -602,4 +602,4 @@ if __name__ == "__main__":
     #       cloudflared tunnel --url http://localhost:3000
     # to run the Flask server:
     #       python3 main.py
-    app.run(port=8081)
+    app.run(host='0.0.0.0', port=5000)
