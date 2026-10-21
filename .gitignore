@@ -1,6 +1,8 @@
-images/
-*.json
-*.txt
-!requirements.txt
-*.db
+backend/images/
 
+backend/*.json
+
+backend/*.txt
+!backend/requirements.txt
+
+backend/*.db
