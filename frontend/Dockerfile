@@ -1,7 +1,7 @@
 # Build
 FROM node:18 AS build
 
-WORKDIR /apps/websash
+WORKDIR /app
 
 COPY package.json package-lock.json ./
 
@@ -14,6 +14,6 @@ RUN npm run build
 # Serve
 FROM nginx:alpine
 
-COPY --from=build /apps/websash/build /usr/share/nginx/html
+COPY --from=build /app/build /usr/share/nginx/html
 
 EXPOSE 80

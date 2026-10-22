@@ -1,5 +1,7 @@
 # Getting Started with Create React App
 
+# IMPORTANT: Node must be version >16 (causes unresolved node:path error)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
