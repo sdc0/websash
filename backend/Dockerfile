@@ -2,14 +2,14 @@
 FROM python:3.11-slim
 
 # set working directory
-WORKDIR /apps/websash
+WORKDIR /app
 
 # copy requirements file and install dependencies
-COPY requirements.txt /apps/websash/
+COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
 # copy all files to workdir
-COPY . /apps/websash
+COPY . /app
 
 # make port 5000 available
 EXPOSE 5000
