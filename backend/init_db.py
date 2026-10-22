@@ -1,4 +1,6 @@
 import sqlite3 as sql
+import bcrypt
+import json
 import os
 
 path = os.path.dirname(__file__)
@@ -50,6 +52,38 @@ CREATE TABLE IF NOT EXISTS issuance (
     FOREIGN KEY (student) REFERENCES student(id),
     FOREIGN KEY (issuer) REFERENCES issuer(id)
 )""")
+
+# setup permissions if not exists
+if not os.path.exists(path + "/permissions.json"):
+    with open(path + "/permissions.json", "w") as f:
+        json.dump({}, f, indent=4)
+
+# setup if default user exists
+if os.path.exists(path + "/default_user.json"):
+    with open(path + "/default_user.json", 'r') as f:
+        data = json.load(f)
+
+    if {"name", "email", "password", "department"}.issubset(data.keys()):
+        print("Default issuer detected, adding to database")
+        password = bcrypt.hashpw(data["password"].encode('utf-8'), bcrypt.gensalt(rounds=10))
+        cur.execute("INSERT INTO issuer (name, email, password, department) VALUES (?, ?, ?, ?)", [data["name"], data["email"], password, data["department"]])
+        id = cur.lastrowid
+
+        with open(path + "/permissions.json", "r") as f:
+            permissions = json.load(f)
+
+        permissions.update({"admin": {
+            "badge": "crud",
+            "issuer": "crud",
+            "student": "crud",
+            "issuance": "crud",
+            "users": [
+                f'{id}'
+            ]
+        }})
+
+        with open(path + "/permissions.json", "w") as f:
+            json.dump(permissions, f, indent=4)
 
 db.commit()
 db.close()

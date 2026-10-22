@@ -364,7 +364,7 @@ def update_student(ident):
     if "u" not in fetch_permissions(g.current_user)["student"]:
         return jsonify({"error": "Insufficient permissions to update student"}), 400
 
-    params = parse_params(["name", "email", "password", "salt"], False)
+    params = parse_params(["name", "email", "password"], False)
     if params is None or ident is None:
         return jsonify({"error": "Failed to fetch all parameters from URL"}), 400
     
@@ -381,11 +381,11 @@ def insert_student():
     if "c" not in fetch_permissions(g.current_user)["student"]:
         return jsonify({"error": "Insufficient permissions to create student"}), 400
 
-    params = parse_params(["name", "email", "password", "salt"])
+    params = parse_params(["name", "email", "password"])
     if params is None:
         return jsonify({"error": "Failed to fetch all parameters from URL"}), 400
 
-    res = query("INSERT INTO student (name, email, password, salt) VALUES (?, ?, ?, ?)", [params["name"], params["email"], params["password"], params["salt"]])
+    res = query("INSERT INTO student (name, email, password) VALUES (?, ?, ?)", [params["name"], params["email"], params["password"]])
 
     return jsonify({"msg": f'Successfully inserted {params["name"]} into student table'}), 200
 
@@ -410,9 +410,12 @@ def get_student_salt():
     if params is None:
         return jsonify({"error": "failed to fetch all parameters from URL"}), 400
 
-    res = query("SELECT (salt) FROM student WHERE email=?", [params["email"]], True)
+    res = query("SELECT (password) FROM student WHERE email=?", [params["email"]], True)
 
-    return jsonify(res), 200
+    if res is None:
+        return jsonify(res), 200
+
+    return jsonify({"salt": res["password"][0:29]}), 200
 
 # issuer CRUD operations
 @app.route("/api/issuer", methods=["POST"])
@@ -445,7 +448,7 @@ def update_issuer(ident):
     if "u" not in fetch_permissions(g.current_user)["issuer"]:
         return jsonify({"error": "Insufficient permissions to update issuer"}), 400
 
-    params = parse_params(["name", "department", "email", "password", "salt"], False)
+    params = parse_params(["name", "department", "email", "password"], False)
     if params is None or ident is None:
         return jsonify({"error": "Failed to fetch all parameters from URL"}), 400
 
@@ -462,11 +465,11 @@ def insert_issuer():
     #if "c" not in fetch_permissions(g.current_user)["issuer"]:
     #    return jsonify({"error": "Insufficient permissions to create issuer"}), 400
 
-    params = parse_params(["name", "department", "email", "password", "salt"])
+    params = parse_params(["name", "department", "email", "password"])
     if params is None:
         return jsonify({"error": "Failed to fetch all parameters from URL"}), 400
 
-    res = query("INSERT INTO issuer (name, department, email, password, salt) VALUES (?, ?, ?, ?, ?)", [params["name"], params["department"], params["email"], params["password"], params["salt"]])
+    res = query("INSERT INTO issuer (name, department, email, password) VALUES (?, ?, ?, ?)", [params["name"], params["department"], params["email"], params["password"]])
 
     return jsonify({"msg": f'Successfully inserted {params["name"]} into issuer table'}), 200
 
@@ -491,9 +494,12 @@ def get_issuer_salt():
     if params is None:
         return jsonify({"error": "Failed to fetch all parameters from URL"}), 400
 
-    res = query("SELECT (salt) FROM issuer WHERE email=?", [params["email"]], True)
+    res = query("SELECT (password) FROM issuer WHERE email=?", [params["email"]], True)
 
-    return jsonify(res), 200
+    if res is None:
+        return jsonify(res), 200
+
+    return jsonify({"salt": res["password"][0:29]}), 200
 
 # issuance CRUD operations
 @app.route("/api/student/<int:ident>/badges", methods=["POST"])
@@ -593,7 +599,8 @@ def delete_issuance():
 # permission CRUD operations
 @app.route("/api/permission/<int:ident>", methods=["GET"])
 def get_permission(ident):
-    res = fetch_permissions(ident)
+    # fix for minimal checking, probably should be changed
+    res = fetch_permissions({"data": {"id": ident}})
 
     return jsonify(res), 200
 
