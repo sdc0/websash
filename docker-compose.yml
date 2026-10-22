@@ -4,6 +4,9 @@ services:
         container_name: flask-backend
         ports:
           - "5000:5000"
+        volumes:
+          - ./backend/badges.db:/app/badges.db
+          - ./backend/images:/app/images
     
     react-frontend:
         build: ./frontend
