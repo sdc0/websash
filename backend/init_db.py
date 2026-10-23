@@ -65,7 +65,7 @@ if os.path.exists(path + "/default_user.json"):
 
     if {"name", "email", "password", "department"}.issubset(data.keys()):
         print("Default issuer detected, adding to database")
-        password = bcrypt.hashpw(data["password"].encode('utf-8'), bcrypt.gensalt(rounds=10))
+        password = bcrypt.hashpw(data["password"].encode('utf-8'), bcrypt.gensalt(rounds=10)).decode("utf-8")
         cur.execute("INSERT INTO issuer (name, email, password, department) VALUES (?, ?, ?, ?)", [data["name"], data["email"], password, data["department"]])
         id = cur.lastrowid
 
