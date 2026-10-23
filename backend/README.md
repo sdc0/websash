@@ -61,7 +61,7 @@ Then add in the following data, filling in where the <tags> are:
 }
 ```
 
-This will automatically create the user, insert it into the database, create the permissions file (if it doesn't exist), and add a new role called admin with "crud" on all fields with only the newly created user.
+This will automatically create the user, insert it into the database, create the permissions file (if it doesn't exist), and add a new role called 'default-user' with "crud" on all fields with only the newly created user.
 
 ## Running the Database
 

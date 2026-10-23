@@ -13,8 +13,7 @@ CREATE TABLE IF NOT EXISTS student (
     id INTEGER PRIMARY KEY,
     name VARCHAR(128),
     email VARCHAR(128) UNIQUE,
-    password VARCHAR(128),
-    salt VARCHAR(32)
+    password VARCHAR(128)
 )""")
 
 cur.execute("""
@@ -23,8 +22,7 @@ CREATE TABLE IF NOT EXISTS issuer (
     name VARCHAR(128),
     department VARCHAR(256),
     email VARCHAR(128) UNIQUE,
-    password VARCHAR(128),
-    salt VARCHAR(32)
+    password VARCHAR(128)
 )""")
 
 cur.execute("""
@@ -65,25 +63,29 @@ if os.path.exists(path + "/default_user.json"):
 
     if {"name", "email", "password", "department"}.issubset(data.keys()):
         print("Default issuer detected, adding to database")
-        password = bcrypt.hashpw(data["password"].encode('utf-8'), bcrypt.gensalt(rounds=10)).decode("utf-8")
-        cur.execute("INSERT INTO issuer (name, email, password, department) VALUES (?, ?, ?, ?)", [data["name"], data["email"], password, data["department"]])
-        id = cur.lastrowid
 
-        with open(path + "/permissions.json", "r") as f:
-            permissions = json.load(f)
+        try: 
+            password = bcrypt.hashpw(data["password"].encode('utf-8'), bcrypt.gensalt(rounds=10)).decode("utf-8")
+            cur.execute("INSERT INTO issuer (name, email, password, department) VALUES (?, ?, ?, ?)", [data["name"], data["email"], password, data["department"]])
+            id = cur.lastrowid
 
-        permissions.update({"admin": {
-            "badge": "crud",
-            "issuer": "crud",
-            "student": "crud",
-            "issuance": "crud",
-            "users": [
-                f'{id}'
-            ]
-        }})
+            with open(path + "/permissions.json", "r") as f:
+                permissions = json.load(f)
 
-        with open(path + "/permissions.json", "w") as f:
-            json.dump(permissions, f, indent=4)
+            permissions.update({"default-user": {
+                "badge": "crud",
+                "issuer": "crud",
+                "student": "crud",
+                "issuance": "crud",
+                "users": [
+                    f'{id}'
+                ]
+            }})
+
+            with open(path + "/permissions.json", "w") as f:
+                json.dump(permissions, f, indent=4)
+        except sql.IntegrityError:
+            print("User with default email already exists")
 
 db.commit()
 db.close()
