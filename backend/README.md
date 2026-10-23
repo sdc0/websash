@@ -15,7 +15,7 @@ Then add text to this file.
 Next, set up a permissions file:
 
 ```
-touchbackend/permissions.json
+touch permissions.json
 ```
 
 Now, leave it blank for now, but once setting up the database and adding users, use the following format to add in permissions for users:
@@ -43,6 +43,25 @@ Substitute <role> for any string descriptor (ex. "admin"), any of the <permissio
  * "d" -> gives delete permissions
 
 For example, the string "cu" in issuer permissions would give the users in with that role the ability to create or update issuers.
+
+Alternatively (or in addition), create a default admin user with a built in role for "crud" on all types (this is currently necessary for the starting usage of the database, as no user can be added from thee frontend without an existing user). Create the file:
+
+```
+touch default_user.json
+```
+
+Then add in the following data, filling in where the <tags> are:
+
+```
+{
+    "name": <name>,
+    "email": <email>,
+    "password": <password>,
+    "department": <department>
+}
+```
+
+This will automatically create the user, insert it into the database, create the permissions file (if it doesn't exist), and add a new role called admin with "crud" on all fields with only the newly created user.
 
 ## Running the Database
 
