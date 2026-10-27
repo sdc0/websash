@@ -245,15 +245,24 @@ def get_badges_from_issuer():
 
     return jsonify(res), 200
 
+@app.route("/api/badge/issuer/<int:ident>", methods=['POST'])
+@token_required
+def get_badges_from_specified_issuer(ident):
+    res = query("SELECT * FROM badge WHERE creator=-1 OR creator=?", [ident])
+
+    for t in res:
+        if t["image"] != None and os.path.exists(t["image"]):
+            with open(t["image"], "rb") as f:
+                t["image"] = base64.b64encode(f.read()).decode('utf-8')
+
+    return jsonify(res), 200
+
 @app.route("/api/badge/update/<int:ident>", methods=['POST'])
 @token_required
 def update_badge(ident):
-    # requires update permissions on badge
-    #if "u" not in fetch_permissions(g.current_user)["badge"]:
-    #    return jsonify({"error": "Insufficient permissions to update badge"}), 400
-
+    # check for permissions to update (must be issuer AND (be creator OR have update access))
     toUpdate = query("SELECT * FROM badge WHERE id=?", [ident], True)
-    if toUpdate["creator"] != -1 and toUpdate["Creator"] != g.current_user["data"]["id"]:
+    if g.current_user["type"] != "issuer" or ((toUpdate["creator"] != -1 and toUpdate["Creator"] != g.current_user["data"]["id"]) and "u" not in fetch_permissions(g.current_user)["badge"]):
         return jsonify({"error": "Insufficient permissions to update badge"}), 400
 
     params = parse_params(["name", "abbr", "type", "image", "desc", "short", "req", "creator"], False)
@@ -288,11 +297,10 @@ def update_badge(ident):
 @app.route("/api/badge/add", methods=['POST'])
 @token_required
 def insert_badge():
-    # requires create permissions on badge
-    #if "c" not in fetch_permissions(g.current_user)["badge"]:
-    #    return jsonify({"error": "Insufficient permissions to create badge"}), 400
+    # check for permissions to create (must be issuer)
+    if g.current_user["type"] != "issuer":
+        return jsonify({"error": "Insufficient permissions to create badge"}), 400
 
-    # requires create permissions on badge
     params = parse_params(["name", "abbr", "type", "image", "desc", "short", "req", "creator"])
     if params is None:
         return jsonify({"error": "Failed to fetch all parameters from URL"}), 400
@@ -313,17 +321,14 @@ def insert_badge():
 @app.route("/api/badge/delete", methods=['POST'])
 @token_required
 def delete_badge():
-    # requires delete permissions on badge
-    #if "d" not in fetch_permissions(g.current_user)["badge"]:
-    #    return jsonify({"error": "Insufficient permissions to delete badge"}), 400
-
     params = parse_params(["id"])
     if params is None:
         return jsonify({"error": "Failed to fetch all parameters from URL"}), 400
     
     toDelete = query("SELECT * FROM badge WHERE id=?", [params["id"]], True)
     
-    if toDelete["creator"] != g.current_user["data"]["id"] and toDelete["creator"] != -1:
+    # check for permissions to delete (must be issuer AND (must be creator OR have delete access))
+    if g.current_user["type"] != "issuer" or ((toDelete["creator"] != g.current_user["data"]["id"] and toDelete["creator"] != -1) and "d" not in fetch_permissions(g.current_user)["badge"]):
         return jsonify({"error": "Insufficient permissions to delete badge"}), 400
 
     os.remove(toDelete["image"])
@@ -335,10 +340,7 @@ def delete_badge():
 @app.route("/api/student", methods=["POST"])
 @token_required
 def get_students():
-    # requires read permissions on student
-    #if "r" not in fetch_permissions(g.current_user)["student"]:
-    #    return jsonify({"error": "Insufficient permissions to read student"}), 400
-
+    # check for permissions to read (must be issuer)
     if g.current_user["type"] != "issuer":
         return jsonify({"error": "Insufficient permissions to read student"}), 400
 
@@ -346,11 +348,9 @@ def get_students():
     return jsonify(res), 200
 
 @app.route("/api/student/<int:ident>", methods=["POST"])
+@token_required
 def get_student(ident):
-    # requires read permission on student
-    #if "r" not in fetch_permissions(g.current_user)["student"]:
-    #    return jsonify({"error": "Insufficient permissions to read student"}), 400
-    
+    # check for permissions to read (must be issuer)
     if g.current_user["type"] != "issuer":
         return jsonify({"error": "Insufficient permissions to read student"}), 400
 
@@ -360,8 +360,8 @@ def get_student(ident):
 @app.route("/api/student/update/<int:ident>", methods=["POST"])
 @token_required
 def update_student(ident):
-    # requires update permissions on student
-    if "u" not in fetch_permissions(g.current_user)["student"]:
+    # check for permissions to update (must be issuer OR (must be student AND be student queried))
+    if g.current_user["type"] != "issuer" and (g.current_user["type"] != "student" or g.current_user["data"]["id"] != ident):
         return jsonify({"error": "Insufficient permissions to update student"}), 400
 
     params = parse_params(["name", "email", "password"], False)
@@ -377,8 +377,8 @@ def update_student(ident):
 @app.route("/api/student/add", methods=["POST"])
 @token_required
 def insert_student():
-    # requires crteate permissions on student
-    if "c" not in fetch_permissions(g.current_user)["student"]:
+    # check for permissions on create (must be issuer)
+    if g.current_user["type"] != "issuer":
         return jsonify({"error": "Insufficient permissions to create student"}), 400
 
     params = parse_params(["name", "email", "password"])
@@ -392,8 +392,8 @@ def insert_student():
 @app.route("/api/student/delete", methods=["POST"])
 @token_required
 def delete_student():
-    # requires delete permissions on student
-    if "d" not in fetch_permissions(g.current_user)["student"]:
+    # check for permissions on delete (must be issuer AND must have delete access)
+    if g.current_user["type"] != "issuer" or "d" not in fetch_permissions(g.current_user)["student"]:
         return jsonify({"error": "Insufficient permissions to delete student"}), 400
     
     params = parse_params(["id"])
@@ -421,10 +421,13 @@ def get_student_salt():
 @app.route("/api/issuer", methods=["POST"])
 @token_required
 def get_issuers():
-    # requires read permissions on issuer
-    #if "r" not in fetch_permissions(g.current_user)["issuer"]:
+    # check for permissions on read (must be issuer AND {implemented later -> (read only yourself OR have read access)})
     if g.current_user["type"] != "issuer":
         return jsonify({"error": "Insufficient permissions to read issuer"}), 400
+
+    if "r" not in fetch_permissions(g.current_user)["issuer"]:
+        res = query("SELECT * FROM issuer WHERE id=?", [g.current_user["data"]["id"]])
+        return jsonify(res), 200
 
     res = query("SELECT * FROM issuer")
     return jsonify(res), 200
@@ -432,9 +435,8 @@ def get_issuers():
 @app.route("/api/issuer/<int:ident>", methods=["POST"])
 @token_required
 def get_issuer(ident):
-    # requires read permissions on issuer
-    #if "r" not in fetch_permissions(g.current_user)["issuer"]:
-    if g.current_user["type"] != "issuer":
+    # check for permissions on read (must be issuer AND (be specified issuer OR have read access))
+    if g.current_user["type"] != "issuer" or (g.current_user["data"]["id"] != ident and "r" not in fetch_permissions(g.current_user)["issuer"]):
         return jsonify({"error": "Insufficient pertmissions to read issuer"}), 400
 
     if request.method == "GET":
@@ -444,8 +446,8 @@ def get_issuer(ident):
 @app.route("/api/issuer/update/<int:ident>", methods=["POST"])
 @token_required
 def update_issuer(ident):
-    # requires update permissons on issuer
-    if "u" not in fetch_permissions(g.current_user)["issuer"]:
+    # check for permissions on update (must be issuer AND (be specified issuer OR have update access))
+    if g.current_user["type"] != "issuer" or (g.current_user["data"]["id"] != ident and "u" not in fetch_permissions(g.current_user)["issuer"]):
         return jsonify({"error": "Insufficient permissions to update issuer"}), 400
 
     params = parse_params(["name", "department", "email", "password"], False)
@@ -461,9 +463,9 @@ def update_issuer(ident):
 @app.route("/api/issuer/add", methods=["POST"])
 @token_required
 def insert_issuer():
-    # requires create permissions on issuer
-    #if "c" not in fetch_permissions(g.current_user)["issuer"]:
-    #    return jsonify({"error": "Insufficient permissions to create issuer"}), 400
+    # check for permissions on create (must be issuer AND have create access)
+    if g.current_user["type"] != "issuer" or "c" not in fetch_permissions(g.current_user)["issuer"]:
+        return jsonify({"error": "Insufficient permissions to create issuer"}), 400
 
     params = parse_params(["name", "department", "email", "password"])
     if params is None:
@@ -476,8 +478,8 @@ def insert_issuer():
 @app.route("/api/issuer/delete", methods=["POST"])
 @token_required
 def delete_issuer():
-    # requires delete permissions on issuer
-    if "d" not in fetch_permissions(g.current_user)["issuer"]:
+    # check for permissions on delete (must be issuer AND have delete access)
+    if g.current_user["type"] != "issuer" or "d" not in fetch_permissions(g.current_user)["issuer"]:
         return jsonify({"error": "Insufficient permissions to delete issuer"}), 400
 
     params = parse_params(["id"])
@@ -505,9 +507,9 @@ def get_issuer_salt():
 @app.route("/api/student/<int:ident>/badges", methods=["POST"])
 @token_required
 def get_issuances_from_student(ident):
-    # requires read permissions on issuance
-    #if g.current_user["type"] != "student" and "r" not in fetch_permissions(g.current_user["data"])["issuance"]:
-    #    return jsonify({"error": "Insufficient permissions to read issuances"}), 400
+    # check for permissions on read (must be issuer OR (must be student AND be specified student))
+    if g.current_user["type"] != "issuer" and (g.current_user["type"] != "student" and g.current_user["data"]["id"] != ident):
+        return jsonify({"error": "Insufficient permissions to read issuances"}), 400
 
     if g.current_user["type"] == "student":
         res = query("SELECT badge.id as 'badge_id', badge.name as 'badge_name', badge.abbr, badge.desc, badge.req, badge.image, badge.type, badge.short, badge.creator, student.id as 'student_id', student.name as 'student_name', issuance.date FROM badge JOIN issuance ON issuance.badge=badge.id JOIN student ON issuance.student=student.id WHERE student.id=?", [ident], one=False)
@@ -528,25 +530,43 @@ def get_issuances_from_student(ident):
 
     return jsonify(temp), 200
 
+@app.route("/api/badge/issue/issuer/<int:ident>", methods=['POST'])
+@token_required
+def get_issueances_from_isser(ident):
+    # check for permission on read (must be issuer)
+    if g.current_user["type"] != "issuer":
+        return jsonify({"error": "Insufficient permissions to get issuances"}), 400
+
+    res = query("SELECT * FROM issuance WHERE issuer=?", [ident])
+
+    return jsonify(res), 200
+
 @app.route("/api/badge/issue", methods=["POST"])
 @token_required
 def get_issuances():
-    #if "r" not in fetch_permissions(g.current_user)["issuance"]:
+    # check for permissions on read (must be issuer)
+    if g.current_user["type"] != "issuer":
+        return jsonify({"error": "Insufficient permissions to get issuances"}), 400
+    
+    res = query("SELECT * FROM issuance")
+
+    return jsonify(res), 200
+
+@app.route("/api/badge/issue/<int:ident>", methods=['POST'])
+@token_required
+def get_issuance_by_id(ident):
+    # check for permissions on read (must be issuer)
     if g.current_user["type"] != "issuer":
         return jsonify({"error": "Insufficient permissions to get issuance"}), 400
-    
-    if "r" in fetch_permissions(g.current_user)["issuance"]:
-        res = query("SELECT * FROM issuance")
-    else:
-        res = query("SELECT * FROM issuance WHERE issuer=?", [g.current_user["data"]["id"]])
+
+    res = query("SELECT * FROM issuance WHERE id=?", [ident], one=True)
 
     return jsonify(res), 200
 
 @app.route("/api/badge/issue/add", methods=["POST"])
 @token_required
 def issue_badge():
-    # requires create permissions on issuance
-    #if "c" not in fetch_permissions(g.current_user)["issuance"]:
+    # check for permissions on create (must be issuer)
     if g.current_user["type"] != "issuer":
         return jsonify({"error": "Insufficient permissions to create issuance"}), 400
 
@@ -561,16 +581,13 @@ def issue_badge():
 @app.route("/api/badge/issue/update", methods=["POST"])
 @token_required
 def update_issuance():
-    # requires update permissions on issuance
-    #if "u" not in fetch_permissions(g.current_user)["issuance"]:
-    #    return jsonify({"error": "Insufficient permissions to update issuance"}), 400
-
     params = parse_params(["badge", "student", "issuer", "date"])
     if params is None:
         return jsonify({"error": "Failed to fetch all parameters from URL"}), 400
 
+    # check for permissions on update (must be issuer AND (must be specified issuer OR must have update access))
     toUpdate = query("SELECT * FROM issuance WHERE badge=? AND student=? AND issuer=?", [params["badge"], params["student"], params["issuer"]], True)
-    if toUpdate["issuer"] != g.current_user["data"]["id"] and "u" not in fetch_permissions(g.current_user)["issuance"]:
+    if g.current_user["type"] != "issuer" or (toUpdate["issuer"] != g.current_user["data"]["id"] and "u" not in fetch_permissions(g.current_user)["issuance"]):
         return jsonify({"error": "Insufficient permissions to update issuance"}), 400
     
     res = query("UPDATE issuance SET date=? WHERE badge=? AND student=? AND issuer=?", [params["date"], params["badge"], params["student"], params["issuer"]])
@@ -580,16 +597,13 @@ def update_issuance():
 @app.route("/api/badge/issue/delete", methods=["POST"])
 @token_required
 def delete_issuance():
-    # requires delete permissions on issuance
-    #if "d" not in fetch_permissions(g.current_user)["issuance"]:
-    #    return jsonify({"error": "Insufficient permissions to delete issuance"}), 400
-
     params = parse_params(["badge", "student", "issuer"])
     if params is None:
         return jsonify({"error": "Failed to fetch all parameters from URL"}), 400
 
+    # check for permissions on delete (must be issuer AND (must be specified issuer OR have delete access))
     toDelete = query("SELECT * FROM issuance WHERE badge=? AND student=? AND issuer=?", [params["badge"], params["student"], params["issuer"]], True)
-    if toDelete["issuer"] != g.current_user["data"]["id"] and "d" not in fetch_permissions(g.current_user)["issuance"]:
+    if g.current_user["type"] != "issuer" or (toDelete["issuer"] != g.current_user["data"]["id"] and "d" not in fetch_permissions(g.current_user)["issuance"]):
         return jsonify({"error": "Insufficient permissions to delete issuance"}), 400
     
     res = query("DELETE FROM issuance WHERE badge=? AND student=? AND issuer=?", [params["badge"], params["student"], params["issuer"]])
