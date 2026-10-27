@@ -7,6 +7,7 @@ services:
         volumes:
           - ./backend/badges.db:/app/badges.db
           - ./backend/images:/app/images
+          - ./backend/permissions.json:/app/permissions.json
     
     react-frontend:
         build: ./frontend
